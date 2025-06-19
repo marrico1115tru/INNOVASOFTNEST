@@ -11,7 +11,7 @@ import { EntregaMaterial } from "../../entrega_material/entities/EntregaMaterial
 import { FichasFormacion } from "../../fichas_formacion/entities/FichasFormacion";
 import { Solicitudes } from "../../solicitudes/entities/Solicitudes";
 import { Areas } from "../../areas/entities/Areas";
-import { Rol } from "../../roles/entities/rol"; 
+import { Rol } from "../../roles/entities/rol";
 
 @Entity("usuarios", { schema: "public" })
 export class Usuarios {
@@ -41,6 +41,10 @@ export class Usuarios {
   @Column("character varying", { name: "cargo", nullable: true, length: 100 })
   cargo: string | null;
 
+
+  @Column("character varying", { name: "password", length: 100 })
+  password: string;
+
   @OneToMany(() => EntregaMaterial, (entregaMaterial) => entregaMaterial.idUsuarioResponsable)
   entregaMaterials: EntregaMaterial[];
 
@@ -61,11 +65,10 @@ export class Usuarios {
   @JoinColumn([{ name: "id_ficha_formacion", referencedColumnName: "id" }])
   idFichaFormacion: FichasFormacion;
 
-  // CORREGIDO: Relación con rol
   @ManyToOne(() => Rol, (rol) => rol.usuarios, {
     onDelete: "RESTRICT",
     onUpdate: "CASCADE",
   })
   @JoinColumn([{ name: "id_rol", referencedColumnName: "id" }])
-  rol: Rol; // Esto reemplaza `idRol` + `rol: any;`
+  rol: Rol;
 }
