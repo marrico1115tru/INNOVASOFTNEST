@@ -42,6 +42,7 @@ export class Usuarios {
   cargo: string | null;
 
 
+  
   @Column("character varying", { name: "password", length: 100 })
   password: string;
 

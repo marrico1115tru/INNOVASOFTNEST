@@ -22,7 +22,7 @@ import { TituladosModule } from './titulados/titulados.module';
 import { PermisosModule } from './permisos/permisos.module';
 import { ModuloModule } from './modulo/modulo.module';
 import { OpcionesModule } from './opciones/opciones.module';
-import { LoginModule } from './login/login.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -59,7 +59,7 @@ import { LoginModule } from './login/login.module';
     PermisosModule,
     ModuloModule,
     OpcionesModule,
-    LoginModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

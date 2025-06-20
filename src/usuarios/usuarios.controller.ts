@@ -19,6 +19,12 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
+  @Get('estadisticas/por-rol')
+getDistribucionPorRol(): Promise<{ nombreRol: string; cantidad: number }[]> {
+  return this.usuariosService.obtenerDistribucionUsuariosPorRol();
+}
+
+
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Usuarios> {
     return this.usuariosService.findOne(+id);
