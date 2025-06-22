@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
-import { MovimientosService } from './movimientos.service';
+import { MovimientosService } from './../movimientos/movimientos.service';
 import { Movimientos } from './entities/Movimientos';
 
 @Controller('movimientos')
