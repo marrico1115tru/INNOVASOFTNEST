@@ -6,13 +6,28 @@ import {
   Delete,
   Param,
   Body,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PermisosService } from './permisos.service';
 import { Permiso } from './entities/permiso';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('permisos')
 export class PermisosController {
   constructor(private readonly permisosService: PermisosService) {}
+
+  // 🔐 Ruta protegida: Obtener permisos del usuario autenticado
+  @UseGuards(JwtAuthGuard)
+  @Get('mis-permisos')
+  async obtenerMisPermisos(@Req() req) {
+    const idRol = req.user.idRol;
+    const permisos = await this.permisosService.getPermisosPorRol(idRol);
+    return {
+      message: 'Permisos cargados correctamente',
+      data: permisos,
+    };
+  }
 
   @Get()
   findAll(): Promise<Permiso[]> {

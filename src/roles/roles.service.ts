@@ -5,6 +5,9 @@ import { Rol } from './entities/rol';
 
 @Injectable()
 export class RolesService {
+  findById(id_rol: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Rol)
     private readonly rolRepository: Repository<Rol>,

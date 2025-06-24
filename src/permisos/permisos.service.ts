@@ -38,4 +38,14 @@ export class PermisosService {
     const permiso = await this.findOne(id);
     await this.permisoRepository.remove(permiso);
   }
+
+  //  IMPLEMENTACIÓN PARA AUTH
+  async getPermisosPorRol(idRol: number): Promise<Permiso[]> {
+    return this.permisoRepository.find({
+      where: {
+        rol: { id: idRol },
+      },
+      relations: ['opcion'], // p
+    });
+  }
 }

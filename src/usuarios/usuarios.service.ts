@@ -56,7 +56,7 @@ export class UsuariosService {
   }
 
   // Buscar usuario por email
-  async findByEmail(email: string): Promise<Usuarios> {
+  async findByEmail(email: string, p0: { relations: string[]; }): Promise<Usuarios> {
     const usuario = await this.usuarioRepository.findOne({
       where: { email },
       relations: ['rol', 'idArea', 'idFichaFormacion'],

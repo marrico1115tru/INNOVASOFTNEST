@@ -38,4 +38,14 @@ export class OpcionesService {
     const opcion = await this.findOne(id);
     await this.opcionRepository.remove(opcion);
   }
+
+  // ✅ NUEVO: necesario para auth.service.ts
+  async findById(id_opcion: number): Promise<Opcion> {
+    const opcion = await this.opcionRepository.findOne({
+      where: { id: id_opcion },
+      relations: ['modulo'], // puedes ajustar según tu diseño
+    });
+    if (!opcion) throw new NotFoundException(`Opción con ID ${id_opcion} no encontrada`);
+    return opcion;
+  }
 }
