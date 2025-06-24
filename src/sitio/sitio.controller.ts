@@ -16,6 +16,11 @@ export class SitioController {
     return this.sitioService.findOne(+id);
   }
 
+  @Get('estadisticas/por-estado')
+async obtenerEstadisticasPorEstado() {
+  return await this.sitioService.contarSitiosPorEstado();
+}
+
   @Post()
   create(@Body() data: Partial<Sitio>): Promise<Sitio> {
     return this.sitioService.create(data);

@@ -42,4 +42,14 @@ export class SitioService {
     const sitio = await this.findOne(id);
     await this.sitioRepo.remove(sitio);
   }
+
+  // ✅ Método corregido
+  async contarSitiosPorEstado(): Promise<{ estado: string; cantidad: number }[]> {
+    return await this.sitioRepo
+      .createQueryBuilder("sitio")
+      .select("sitio.estado", "estado")
+      .addSelect("COUNT(*)", "cantidad")
+      .groupBy("sitio.estado")
+      .getRawMany();
+  }
 }

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Usuarios } from './entities/Usuarios';
 import * as bcrypt from 'bcrypt';
 
@@ -9,6 +9,7 @@ export class UsuariosService {
   constructor(
     @InjectRepository(Usuarios)
     private readonly usuarioRepository: Repository<Usuarios>,
+    private readonly dataSource: DataSource // ✅ inyección del DataSource
   ) {}
 
   // Obtener todos los usuarios con relaciones
@@ -67,17 +68,72 @@ export class UsuariosService {
   }
 
   // ✅ Distribución de usuarios por rol (para gráficas)
-async obtenerDistribucionUsuariosPorRol(): Promise<
-  { nombreRol: string; cantidad: number }[]
-> {
-  return this.usuarioRepository
-    .createQueryBuilder('usuario')
-    .leftJoin('usuario.rol', 'rol')
-    .select('rol.nombre_rol', 'nombreRol')
-    .addSelect('COUNT(usuario.id)', 'cantidad')
-    .groupBy('rol.nombre_rol')
-    .orderBy('cantidad', 'DESC')
-    .getRawMany();
+  async obtenerDistribucionUsuariosPorRol(): Promise<
+    { nombreRol: string; cantidad: number }[]
+  > {
+    return this.usuarioRepository
+      .createQueryBuilder('usuario')
+      .leftJoin('usuario.rol', 'rol')
+      .select('rol.nombre_rol', 'nombreRol')
+      .addSelect('COUNT(usuario.id)', 'cantidad')
+      .groupBy('rol.nombre_rol')
+      .orderBy('cantidad', 'DESC')
+      .getRawMany();
+  }
+
+  // ✅ Solicitudes y entregas mensuales agrupadas por rol
+  async getEstadisticasMensualesPorRol() {
+    const resultado = await this.dataSource.query(`
+      SELECT
+        r.nombre_rol AS rol,
+        TO_CHAR(s.fecha_solicitud, 'Month') AS mes,
+        COUNT(DISTINCT s.id) AS total_solicitudes,
+        COUNT(DISTINCT e.id) AS total_entregas
+      FROM usuarios u
+      INNER JOIN roles r ON r.id = u.id_rol
+      LEFT JOIN solicitudes s ON s.id_usuario_solicitante = u.id
+      LEFT JOIN entrega_material e ON e.id_usuario_responsable = u.id
+      GROUP BY r.nombre_rol, mes
+      ORDER BY r.nombre_rol, mes;
+    `);
+
+    const agrupado = resultado.reduce((acc, fila) => {
+      const { rol, mes, total_solicitudes, total_entregas } = fila;
+      const mesKey = mes.trim().toLowerCase();
+
+      if (!acc[rol]) {
+        acc[rol] = {
+          rol,
+          solicitudes: {},
+          entregas: {},
+        };
+      }
+
+      acc[rol].solicitudes[mesKey] = parseInt(total_solicitudes, 10);
+      acc[rol].entregas[mesKey] = parseInt(total_entregas, 10);
+
+      return acc;
+    }, {} as Record<string, any>);
+
+    return Object.values(agrupado);
+  }
+
+  // Usuarios con mayor uso de productos (mayor número de solicitudes)
+async getUsuariosConMayorUsoProductos() {
+  const resultado = await this.dataSource.query(`
+    SELECT
+      u.id,
+      u.nombre,
+      u.apellido,
+      COUNT(s.id) AS total_solicitudes
+    FROM usuarios u
+    JOIN solicitudes s ON s.id_usuario_solicitante = u.id
+    GROUP BY u.id, u.nombre, u.apellido
+    ORDER BY total_solicitudes DESC
+    LIMIT 10;
+  `);
+
+  return resultado;
 }
 
 }

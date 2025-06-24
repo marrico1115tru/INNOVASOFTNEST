@@ -27,6 +27,13 @@ export class Sitio {
   })
   ubicacion: string | null;
 
+    @Column("character varying", {
+    name: "estado",
+    length: 20,
+    default: () => `'ACTIVO'`,
+  })
+  estado: string;
+
   @OneToMany(() => Inventario, (inventario) => inventario.fkSitio)
   inventarios: Inventario[];
 

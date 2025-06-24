@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan } from 'typeorm';
+import { Repository, LessThan, Between } from 'typeorm';
 import { Productos } from './entities/Productos';
 
 @Injectable()
@@ -101,6 +101,54 @@ async obtenerCantidadSolicitadaPorUsuario(): Promise<
     .orderBy('"totalSolicitado"', 'DESC') // ← ✅ comillas aquí
     .getRawMany();
 }
+
+async obtenerProductosConMayorMovimiento(): Promise<
+  { nombre: string; totalMovimiento: number }[]
+> {
+  return this.productosRepo
+    .createQueryBuilder('producto')
+    .leftJoin('producto.detalleSolicituds', 'detalle')
+    .select('producto.nombre', 'nombre')
+    .addSelect('COALESCE(SUM(detalle.cantidadSolicitada), 0)', 'totalMovimiento')
+    .groupBy('producto.nombre')
+    .orderBy('COALESCE(SUM(detalle.cantidadSolicitada), 0)', 'DESC')
+    .limit(5)
+    .getRawMany();
+}
+
+async obtenerProductosPorSitio(): Promise<
+  { nombreSitio: string; nombreProducto: string; stock: number }[]
+> {
+  return await this.productosRepo
+    .createQueryBuilder('producto')
+    .leftJoin('producto.inventarios', 'inventario')
+    .leftJoin('inventario.fkSitio', 'sitio')
+    .select('sitio.nombre', 'nombreSitio')
+    .addSelect('producto.nombre', 'nombreProducto')
+    .addSelect('SUM(inventario.stock)', 'stock')
+    .groupBy('sitio.nombre')
+    .addGroupBy('producto.nombre')
+    .getRawMany();
+}
+
+
+ async productosProximosAVencer() {
+    const hoy = new Date();
+    const dentroDe7Dias = new Date();
+    dentroDe7Dias.setDate(hoy.getDate() + 7);
+
+    const fechaInicio = hoy.toISOString().split('T')[0];       // "2025-06-23"
+    const fechaFin = dentroDe7Dias.toISOString().split('T')[0]; // "2025-06-30"
+
+    return this.productosRepo.find({
+      where: {
+        fechaVencimiento: Between(fechaInicio, fechaFin), // Usamos strings
+      },
+      relations: ['inventarios', 'detalleSolicituds', 'idCategoria'],
+      order: { fechaVencimiento: 'ASC' },
+    });
+  }
+
 
 
 

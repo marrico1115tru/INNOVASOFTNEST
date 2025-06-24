@@ -19,6 +19,18 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
+  
+  @Get('estadisticas/mensuales-por-rol')
+  getEstadisticasMensualesPorRol() {
+    return this.usuariosService.getEstadisticasMensualesPorRol();
+  }
+
+  @Get('usuarios-top-solicitudes')
+async getUsuariosTopSolicitudes() {
+  return this.usuariosService.getUsuariosConMayorUsoProductos();
+}
+
+
   @Get('estadisticas/por-rol')
 getDistribucionPorRol(): Promise<{ nombreRol: string; cantidad: number }[]> {
   return this.usuariosService.obtenerDistribucionUsuariosPorRol();

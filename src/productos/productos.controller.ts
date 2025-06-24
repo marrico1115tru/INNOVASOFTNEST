@@ -29,6 +29,23 @@ getCantidadSolicitadaPorUsuario(): Promise<
 }
 
 
+  @Get('mayor-movimiento')
+async obtenerMayorMovimiento() {
+  return await this.productosService.obtenerProductosConMayorMovimiento();
+}
+
+@Get('por-sitio')
+obtenerPorSitio() {
+  return this.productosService.obtenerProductosPorSitio();
+}
+
+// src/productos/productos.controller.ts
+
+@Get('proximos-vencer')
+async getProductosProximosAVencer(): Promise<Productos[]> {
+  return this.productosService.productosProximosAVencer();
+}
+
 
   // ✅ Productos más solicitados (antes del :id)
   @Get('mas-solicitados')
@@ -69,4 +86,7 @@ getCantidadSolicitadaPorUsuario(): Promise<
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.productosService.remove(id);
   }
+
+
+
 }
