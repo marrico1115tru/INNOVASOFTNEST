@@ -37,12 +37,7 @@ export class Usuarios {
 
   @Column("character varying", { name: "telefono", nullable: true, length: 20 })
   telefono: string | null;
-
-  @Column("character varying", { name: "cargo", nullable: true, length: 100 })
-  cargo: string | null;
-
-
-  
+ 
   @Column("character varying", { name: "password", length: 100 })
   password: string;
 
