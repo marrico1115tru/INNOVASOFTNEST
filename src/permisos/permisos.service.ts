@@ -39,13 +39,39 @@ export class PermisosService {
     await this.permisoRepository.remove(permiso);
   }
 
-  //  IMPLEMENTACIÓN PARA AUTH
+  // ✅ Implementación corregida
   async getPermisosPorRol(idRol: number): Promise<Permiso[]> {
-    return this.permisoRepository.find({
+    const permisos = await this.permisoRepository.find({
       where: {
         rol: { id: idRol },
       },
-      relations: ['opcion'], // p
+      relations: ['rol', 'opcion'],
     });
+
+    return permisos;
+  }
+
+  // Obtener permiso por ruta y rol
+  async getPermisoPorRutaYRol(ruta: string, idRol: number) {
+    const permiso = await this.permisoRepository
+      .createQueryBuilder('permiso')
+      .innerJoinAndSelect('permiso.opcion', 'opcion')
+      .innerJoin('permiso.rol', 'rol')
+      .where('opcion.ruta_frontend = :ruta', { ruta })
+      .andWhere('rol.id = :idRol', { idRol })
+      .select([
+        'permiso.puedeVer',
+        'permiso.puedeCrear',
+        'permiso.puedeEditar',
+        'permiso.puedeEliminar',
+      ])
+      .getOne();
+
+    return permiso || {
+      puedeVer: false,
+      puedeCrear: false,
+      puedeEditar: false,
+      puedeEliminar: false,
+    };
   }
 }

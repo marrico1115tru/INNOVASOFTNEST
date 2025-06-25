@@ -6,22 +6,22 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ Middleware para leer cookies (obligatorio para JWT en cookies)
+  // 🟡 Middleware para habilitar lectura de cookies (requerido para JWT en cookies)
   app.use(cookieParser());
 
-  // ✅ Validaciones globales
+  // 🟢 Validaciones globales con class-validator
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // elimina propiedades no definidas en DTO
       forbidNonWhitelisted: true, // lanza error si se envían propiedades no permitidas
-      transform: true, // convierte tipos automáticamente
+      transform: true, // convierte tipos automáticamente (por ejemplo string a number)
     }),
   );
 
-  // ✅ Habilita CORS con credenciales (para enviar cookies desde React)
+  // 🔵 Configura CORS para permitir cookies desde el frontend (React, etc.)
   app.enableCors({
-    origin: 'http://localhost:3001', // tu frontend
-    credentials: true, // 🔥 importante para que se envíen cookies
+    origin: 'http://localhost:3001', // dirección del frontend
+    credentials: true, // 🔥 necesario para enviar cookies (como el token)
   });
 
   const port = process.env.PORT || 3000;

@@ -1,22 +1,32 @@
-import { Controller, Get, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { Productos } from './entities/Productos';
-import { PermisosGuard } from 'src/auth/guards/permisos.guard';
-import { RutaProtegida } from 'src/auth/decorators/ruta-protegida.decorator';
 
 @Controller('productos')
-@UseGuards(PermisosGuard)
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
 
   @Get()
-  @RutaProtegida({ ruta: '/productos', accion: 'puede_ver' })
   findAll(): Promise<Productos[]> {
     return this.productosService.findAll();
   }
 
+  // ✅ Ruta específica antes que las rutas dinámicas
+  @Get('vencidos')
+  getProductosVencidos(): Promise<Productos[]> {
+    return this.productosService.obtenerProductosVencidos();
+  }
+
   @Get('solicitados-por-usuario')
-  @RutaProtegida({ ruta: '/productos', accion: 'puede_ver' })
   getCantidadSolicitadaPorUsuario(): Promise<
     { idUsuario: number; nombreCompleto: string; totalSolicitado: number }[]
   > {
@@ -24,14 +34,41 @@ export class ProductosController {
   }
 
   @Get('mayor-movimiento')
-  @RutaProtegida({ ruta: '/productos', accion: 'puede_ver' })
-  async obtenerMayorMovimiento() {
-    return await this.productosService.obtenerProductosConMayorMovimiento();
+  obtenerMayorMovimiento() {
+    return this.productosService.obtenerProductosConMayorMovimiento();
   }
 
   @Get('por-sitio')
-  @RutaProtegida({ ruta: '/productos', accion: 'puede_ver' })
   obtenerPorSitio() {
     return this.productosService.obtenerProductosPorSitio();
+  }
+
+  @Get('proximos-vencer')
+  productosProximosAVencer() {
+    return this.productosService.productosProximosAVencer();
+  }
+
+  // 🔴 Esto debe ir al final, porque si no atrapa rutas como 'vencidos'
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Productos> {
+    return this.productosService.findOne(id);
+  }
+
+  @Post()
+  create(@Body() body: Partial<Productos>): Promise<Productos> {
+    return this.productosService.create(body);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: Partial<Productos>,
+  ): Promise<Productos> {
+    return this.productosService.update(id, body);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.productosService.remove(id);
   }
 }

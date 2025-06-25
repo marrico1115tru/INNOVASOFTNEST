@@ -10,6 +10,6 @@ import { Opcion } from '../opciones/entities/opcion';
   imports: [TypeOrmModule.forFeature([Permiso, Rol, Opcion])],
   controllers: [PermisosController],
   providers: [PermisosService],
-  exports: [PermisosService], // 👈 EXPORTAR PermisosService
+  exports: [PermisosService],
 })
 export class PermisosModule {}

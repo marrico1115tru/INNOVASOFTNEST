@@ -3,7 +3,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { JwtService } from '@nestjs/jwt';
 import { PermisosService } from 'src/permisos/permisos.service';
@@ -24,10 +24,18 @@ export class AuthService {
     });
 
     if (!user) {
+      console.log('❌ Usuario no encontrado:', email);
       throw new UnauthorizedException('Usuario no encontrado');
     }
 
+    console.log('✅ Usuario encontrado:', user.email);
+    console.log('🔑 Contraseña ingresada:', password);
+    console.log('🔐 Hash en BD:', user.password);
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    console.log('🔍 ¿Contraseña válida?', isPasswordValid);
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Contraseña incorrecta');
     }
@@ -42,6 +50,10 @@ export class AuthService {
 
     const permisos = await this.permisosService.getPermisosPorRol(user.rol.id);
 
+    if (!Array.isArray(permisos)) {
+      throw new Error('El servicio de permisos no retornó una lista válida');
+    }
+
     const payload = {
       sub: user.id,
       email: user.email,
@@ -50,12 +62,11 @@ export class AuthService {
 
     const token = this.jwtService.sign(payload);
 
-    // ✅ Establecer cookie con el token
     res.cookie('token', token, {
       httpOnly: true,
       sameSite: 'lax',
-      secure: false, // true si usas HTTPS
-      maxAge: 1000 * 60 * 60 * 4,
+      secure: false, // ✅ cambia a true si usas HTTPS
+      maxAge: 1000 * 60 * 60 * 4, // 4 horas
     });
 
     return {

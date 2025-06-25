@@ -6,26 +6,25 @@ import {
   Delete,
   Param,
   Body,
-  UseGuards,
-  Req,
+  Query,
 } from '@nestjs/common';
 import { PermisosService } from './permisos.service';
 import { Permiso } from './entities/permiso';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('permisos')
 export class PermisosController {
   constructor(private readonly permisosService: PermisosService) {}
 
-  // 🔐 Ruta protegida: Obtener permisos del usuario autenticado
-  @UseGuards(JwtAuthGuard)
-  @Get('mis-permisos')
-  async obtenerMisPermisos(@Req() req) {
-    const idRol = req.user.idRol;
-    const permisos = await this.permisosService.getPermisosPorRol(idRol);
+  // ❌ Ya no requiere autenticación
+  @Get('por-ruta')
+  async obtenerPermisosPorRuta(
+    @Query('ruta') ruta: string,
+    @Query('idRol') idRol: string,
+  ) {
+    const permiso = await this.permisosService.getPermisoPorRutaYRol(ruta, +idRol);
     return {
-      message: 'Permisos cargados correctamente',
-      data: permisos,
+      message: `Permisos para la ruta ${ruta}`,
+      data: permiso,
     };
   }
 
@@ -45,7 +44,10 @@ export class PermisosController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() permisoData: Partial<Permiso>): Promise<Permiso> {
+  update(
+    @Param('id') id: string,
+    @Body() permisoData: Partial<Permiso>,
+  ): Promise<Permiso> {
     return this.permisosService.update(+id, permisoData);
   }
 
