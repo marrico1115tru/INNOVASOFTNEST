@@ -1,14 +1,7 @@
 // src/usuarios/usuarios.controller.ts
 import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Param,
-  Body,
-  UseGuards,
-  Req,
+  Controller, Get, Post, Put, Delete,
+  Param, Body, UseGuards, Req
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { Usuarios } from './entities/Usuarios';
@@ -26,7 +19,7 @@ export class UsuariosController {
   getPerfil(@Req() req) {
     return {
       message: 'Perfil cargado correctamente',
-      usuario: req.user, // { idUsuario, email, idRol }
+      usuario: req.user,
     };
   }
 

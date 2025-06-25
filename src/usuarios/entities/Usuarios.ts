@@ -72,4 +72,5 @@ export class Usuarios {
   })
   @JoinColumn([{ name: "id_rol", referencedColumnName: "id" }])
   rol: Rol;
+  permisos: never[];
 }
