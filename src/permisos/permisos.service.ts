@@ -51,6 +51,19 @@ export class PermisosService {
     return permisos;
   }
 
+
+  async obtenerPorRol(idRol: number): Promise<Permiso[]> {
+  return this.permisoRepository.find({
+    where: { rol: { id: idRol } },
+    relations: ['opcion', 'rol'],
+    order: {
+      opcion: {
+        nombreOpcion: 'ASC',
+      },
+    },
+  });
+}
+
   // Obtener permiso por ruta y rol
   async getPermisoPorRutaYRol(ruta: string, idRol: number) {
     const permiso = await this.permisoRepository

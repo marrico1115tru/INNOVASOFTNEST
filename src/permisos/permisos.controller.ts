@@ -15,6 +15,16 @@ import { Permiso } from './entities/permiso';
 export class PermisosController {
   constructor(private readonly permisosService: PermisosService) {}
 
+
+  @Get('rol/:idRol')
+async obtenerPermisosPorRol(@Param('idRol') idRol: string) {
+  const permisos = await this.permisosService.obtenerPorRol(+idRol);
+  return {
+    message: `Permisos del rol ${idRol}`,
+    data: permisos,
+  };
+}
+
   // ❌ Ya no requiere autenticación
   @Get('por-ruta')
   async obtenerPermisosPorRuta(
