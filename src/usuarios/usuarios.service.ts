@@ -1,5 +1,4 @@
-// src/usuarios/usuarios.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'; // 👈 se agregó BadRequestException
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Usuarios } from './entities/Usuarios';
@@ -30,28 +29,45 @@ export class UsuariosService {
 
   async create(data: Partial<Usuarios>): Promise<Usuarios> {
     const nuevo = this.usuarioRepository.create(data);
-    const hashedPassword = await bcrypt.hash(nuevo.password, 10);
-    nuevo.password = hashedPassword;
+    nuevo.password = await bcrypt.hash(nuevo.password, 10);
     return this.usuarioRepository.save(nuevo);
   }
 
   async update(id: number, data: Partial<Usuarios>): Promise<Usuarios> {
     const usuario = await this.findOne(id);
-    if (data.password) data.password = await bcrypt.hash(data.password, 10);
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
     Object.assign(usuario, data);
     return this.usuarioRepository.save(usuario);
   }
 
+  // ✅ MÉTODO remove CORREGIDO
   async remove(id: number): Promise<void> {
     const usuario = await this.findOne(id);
-    await this.usuarioRepository.remove(usuario);
+
+    try {
+      await this.usuarioRepository.remove(usuario);
+    } catch (error) {
+      if (error.code === '23503') {
+        throw new BadRequestException(
+          `No se puede eliminar el usuario con ID ${id} porque está siendo referenciado en otras tablas.`
+        );
+      }
+      throw error;
+    }
   }
 
-  async findByEmail(email: string, p0: { relations: string[]; }): Promise<Usuarios> {
-    const usuario = await this.usuarioRepository.findOne({
-      where: { email },
-      relations: ['rol', 'idArea', 'idFichaFormacion'],
-    });
+  async findByEmail(email: string): Promise<Usuarios> {
+    const usuario = await this.usuarioRepository
+      .createQueryBuilder('usuario')
+      .addSelect('usuario.password')
+      .leftJoinAndSelect('usuario.rol', 'rol')
+      .leftJoinAndSelect('usuario.idArea', 'idArea')
+      .leftJoinAndSelect('usuario.idFichaFormacion', 'idFichaFormacion')
+      .where('usuario.email = :email', { email })
+      .getOne();
+
     if (!usuario) throw new NotFoundException(`Usuario ${email} no encontrado`);
     return usuario;
   }
@@ -81,13 +97,11 @@ export class UsuariosService {
       GROUP BY r.nombre_rol, mes
       ORDER BY r.nombre_rol, mes;
     `);
-
     return resultado;
-
   }
 
   async getUsuariosConMayorUsoProductos() {
-    const resultado = await this.dataSource.query(`
+    return this.dataSource.query(`
       SELECT u.id, u.nombre, u.apellido, COUNT(s.id) AS total_solicitudes
       FROM usuarios u
       JOIN solicitudes s ON s.id_usuario_solicitante = u.id
@@ -95,6 +109,5 @@ export class UsuariosService {
       ORDER BY total_solicitudes DESC
       LIMIT 10;
     `);
-    return resultado;
   }
 }

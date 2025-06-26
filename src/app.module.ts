@@ -28,7 +28,6 @@ import { AuthModule } from './auth/auth.module';
 
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
