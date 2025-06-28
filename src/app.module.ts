@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -26,24 +28,31 @@ import { ModuloModule } from './modulo/modulo.module';
 import { OpcionesModule } from './opciones/opciones.module';
 import { AuthModule } from './auth/auth.module';
 
-import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
-
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '123456',
-      database: 'bodegaSena',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      autoLoadEntities: true,
-      synchronize: true,
+    // ✅ Variables de entorno globales
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
 
-    // Módulos propios
+    // ✅ Configuración de la conexión a la base de datos
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get<string>('DB_HOST') || 'localhost',
+        port: parseInt(config.get<string>('DB_PORT') || '5432'),
+        username: config.get<string>('DB_USERNAME') || 'postgres',
+        password: config.get<string>('DB_PASSWORD') || '123456',
+        database: config.get<string>('DB_NAME') || 'bodegaSena',
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true,
+        autoLoadEntities: true,
+      }),
+    }),
+
+    // ✅ Módulos propios
     MunicipiosModule,
     CentroFormacionModule,
     SedesModule,
@@ -65,21 +74,8 @@ import { APP_GUARD } from '@nestjs/core';
     ModuloModule,
     OpcionesModule,
     AuthModule,
-
-    // Puedes usar JwtModule aquí si necesitas inyectarlo globalmente también
-    JwtModule.register({
-      secret: 'SECRET_JWT_KEY', // cambia por env en producción
-      signOptions: { expiresIn: '8h' },
-    }),
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    // Activar protección global si deseas
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

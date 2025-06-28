@@ -1,10 +1,24 @@
-import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { CategoriasProductosService } from './categorias_productos.service';
 import { CategoriasProductos } from './entities/CategoriasProductos';
+import { JwtGuard } from './../auth/guards/jwt.guard';
+import { User } from './../auth/decorators/user.decorator';
 
+@UseGuards(JwtGuard) // 🔐 Protege todo el controlador
 @Controller('categorias-productos')
 export class CategoriasProductosController {
-  constructor(private readonly categoriaService: CategoriasProductosService) {}
+  constructor(
+    private readonly categoriaService: CategoriasProductosService,
+  ) {}
 
   @Get()
   findAll(): Promise<CategoriasProductos[]> {
@@ -17,12 +31,19 @@ export class CategoriasProductosController {
   }
 
   @Post()
-  create(@Body() data: Partial<CategoriasProductos>): Promise<CategoriasProductos> {
+  create(
+    @Body() data: Partial<CategoriasProductos>,
+    @User() user: any, // 👤 Usuario autenticado disponible
+  ): Promise<CategoriasProductos> {
     return this.categoriaService.create(data);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: Partial<CategoriasProductos>): Promise<CategoriasProductos> {
+  update(
+    @Param('id') id: string,
+    @Body() data: Partial<CategoriasProductos>,
+    @User() user: any, // 👤 Usuario autenticado disponible
+  ): Promise<CategoriasProductos> {
     return this.categoriaService.update(+id, data);
   }
 

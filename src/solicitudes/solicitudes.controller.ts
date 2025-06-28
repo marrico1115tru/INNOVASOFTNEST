@@ -1,7 +1,19 @@
-import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { SolicitudesService } from './solicitudes.service';
 import { Solicitudes } from './entities/Solicitudes';
+import { JwtGuard } from './../auth/../auth/guards/jwt.guard';
+import { User } from './../auth/decorators/user.decorator';
 
+@UseGuards(JwtGuard) // 🔐 Protege todas las rutas del controlador
 @Controller('solicitudes')
 export class SolicitudesController {
   constructor(private readonly solicitudesService: SolicitudesService) {}
@@ -22,12 +34,24 @@ export class SolicitudesController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: Partial<Solicitudes>): Promise<Solicitudes> {
+  update(
+    @Param('id') id: string,
+    @Body() data: Partial<Solicitudes>,
+  ): Promise<Solicitudes> {
     return this.solicitudesService.update(+id, data);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.solicitudesService.remove(+id);
+  }
+
+  // Ruta de prueba para obtener datos del usuario autenticado
+  @Get('usuario/perfil')
+  getUsuarioAutenticado(@User() user: any) {
+    return {
+      message: 'Usuario autenticado correctamente',
+      user,
+    };
   }
 }

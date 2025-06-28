@@ -1,7 +1,19 @@
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Rol } from './entities/rol';
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { JwtGuard } from './../auth/guards/jwt.guard';
+import { User } from './../auth/decorators/user.decorator';
 
+@UseGuards(JwtGuard) // 🔐 Protege todas las rutas del controlador
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
@@ -22,12 +34,24 @@ export class RolesController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() rolData: Partial<Rol>): Promise<Rol> {
+  update(
+    @Param('id') id: string,
+    @Body() rolData: Partial<Rol>,
+  ): Promise<Rol> {
     return this.rolesService.update(+id, rolData);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.rolesService.remove(+id);
+  }
+
+  // Ruta opcional para probar acceso al usuario autenticado
+  @Get('usuario/perfil')
+  getUsuarioAutenticado(@User() user: any) {
+    return {
+      message: 'Usuario autenticado correctamente',
+      user,
+    };
   }
 }

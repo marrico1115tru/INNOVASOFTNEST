@@ -7,10 +7,14 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { Productos } from './entities/Productos';
+import { JwtGuard } from './../auth/guards/jwt.guard';
+import { User } from './../auth/decorators/user.decorator';
 
+@UseGuards(JwtGuard) // 🔐 Protege todas las rutas del controlador
 @Controller('productos')
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
@@ -20,7 +24,6 @@ export class ProductosController {
     return this.productosService.findAll();
   }
 
-  // ✅ Ruta específica antes que las rutas dinámicas
   @Get('vencidos')
   getProductosVencidos(): Promise<Productos[]> {
     return this.productosService.obtenerProductosVencidos();
@@ -48,14 +51,17 @@ export class ProductosController {
     return this.productosService.productosProximosAVencer();
   }
 
-  // 🔴 Esto debe ir al final, porque si no atrapa rutas como 'vencidos'
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number): Promise<Productos> {
     return this.productosService.findOne(id);
   }
 
   @Post()
-  create(@Body() body: Partial<Productos>): Promise<Productos> {
+  create(
+    @Body() body: Partial<Productos>,
+    @User() user: any, // 👤 Acceso al usuario autenticado si se necesita
+  ): Promise<Productos> {
+    // Puedes usar user.idUsuario si deseas guardar quién creó el producto
     return this.productosService.create(body);
   }
 
@@ -70,5 +76,14 @@ export class ProductosController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.productosService.remove(id);
+  }
+
+  // Ruta opcional para probar el decorador @User()
+  @Get('usuario/perfil')
+  getUsuarioAutenticado(@User() user: any) {
+    return {
+      message: 'Usuario autenticado correctamente',
+      user,
+    };
   }
 }

@@ -23,13 +23,6 @@ export class Productos {
   @Column("text", { name: "descripcion", nullable: true })
   descripcion: string | null;
 
-  @Column("character varying", {
-    name: "tipo_materia",
-    nullable: true,
-    length: 50,
-  })
-  tipoMateria: string | null;
-
   @Column("date", { name: "fecha_vencimiento", nullable: true })
   fechaVencimiento: string | null;
 

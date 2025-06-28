@@ -6,10 +6,14 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TituladosService } from './titulados.service';
 import { Titulados } from './entities/Titulados';
+import { JwtGuard } from './../auth/guards/jwt.guard';
+import { User } from './../auth/decorators/user.decorator';
 
+@UseGuards(JwtGuard) // Protege todo el controlador
 @Controller('titulados')
 export class TituladosController {
   constructor(private readonly tituladosService: TituladosService) {}
@@ -37,5 +41,14 @@ export class TituladosController {
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.tituladosService.remove(+id);
+  }
+
+  // Ejemplo adicional: obtener el usuario autenticado si lo necesitas
+  @Get('perfil/usuario')
+  getUsuarioAutenticado(@User() user: any) {
+    return {
+      message: 'Usuario autenticado correctamente',
+      user,
+    };
   }
 }

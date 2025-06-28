@@ -5,6 +5,9 @@ import { Permiso } from './entities/permiso';
 
 @Injectable()
 export class PermisosService {
+  verificarPermiso(id: any, rutaActual: any, metodo: string) {
+      throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Permiso)
     private readonly permisoRepository: Repository<Permiso>,
