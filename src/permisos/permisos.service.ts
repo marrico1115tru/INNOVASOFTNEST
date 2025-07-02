@@ -97,7 +97,7 @@ export class PermisosService {
     );
   }
 
-  // ✅ NUEVA: Obtener módulos únicos por rol
+  // Obtener módulos únicos por rol
   async obtenerModulosPorRol(idRol: number): Promise<{ id: number; nombreModulo: string }[]> {
     const modulos = await this.permisoRepository
       .createQueryBuilder('permiso')

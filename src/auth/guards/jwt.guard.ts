@@ -16,7 +16,6 @@ import { Permiso } from 'src/permisos/entities/permiso';
 export class JwtGuard implements CanActivate {
   constructor(
     private readonly configService: ConfigService,
-
     @InjectRepository(Permiso)
     private readonly permisosRepository: Repository<Permiso>,
   ) {}
@@ -25,7 +24,7 @@ export class JwtGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = request.cookies?.token;
 
-    console.log('TOKEN RECIBIDO:', token);
+    console.log('🛡️ TOKEN RECIBIDO:', token);
     if (!token) {
       throw new UnauthorizedException('Token no encontrado en cookies');
     }
@@ -36,13 +35,35 @@ export class JwtGuard implements CanActivate {
     }
 
     try {
-      // ✅ Decodificar el token
       const decoded = jwt.verify(token, secret) as any;
 
       const userRolId = decoded?.rol?.id;
-      if (!userRolId) throw new UnauthorizedException('Rol inválido en token');
+      if (!userRolId) {
+        throw new UnauthorizedException('Rol inválido en token');
+      }
 
-      // 🧠 Consultar permisos en base de datos
+      // 🛣️ Construir ruta completa
+      const path = request.route?.path || request.url;
+      const baseUrl = request.baseUrl || '';
+      const fullRoute = `${baseUrl}${path}`;
+
+      // 👉 Rutas que no requieren validación de permisos (solo JWT)
+      const rutasPublicas = [
+        '/permisos/modulos', // ejemplo: /permisos/modulos/:idRol
+        '/auth/refresh',      // si usas refresh token
+        '/auth/profile',      // perfil de usuario
+      ];
+      const esRutaPublica = rutasPublicas.some((ruta) =>
+        fullRoute.startsWith(ruta)
+      );
+
+      if (esRutaPublica) {
+        request['user'] = decoded;
+        console.log('🔓 Ruta pública permitida sin validar permisos:', fullRoute);
+        return true;
+      }
+
+      // 🔐 Validar permisos en base de datos
       const permisos = await this.permisosRepository.find({
         where: { rol: { id: userRolId } },
         relations: ['opcion'],
@@ -56,14 +77,9 @@ export class JwtGuard implements CanActivate {
         puede_eliminar: permiso.puedeEliminar,
       }));
 
-      const path = request.route?.path || request.url;
-      const baseUrl = request.baseUrl || '';
-      const fullRoute = `${baseUrl}${path}`;
-
       console.log('🛣️ Ruta solicitada:', fullRoute);
-      console.log('🔑 Permisos cargados:', permisosFormateados);
+      console.log('🔑 Permisos del rol:', permisosFormateados);
 
-      // Validar permisos
       const permisoRuta = permisosFormateados.find((p) =>
         fullRoute.startsWith(p.ruta)
       );
@@ -80,9 +96,7 @@ export class JwtGuard implements CanActivate {
         );
       }
 
-      // Adjuntar el usuario decodificado a la request
       request['user'] = decoded;
-
       return true;
     } catch (error) {
       console.error('❌ Error en verificación de token:', error.message);
