@@ -13,11 +13,13 @@ import { ProductosService } from './productos.service';
 import { Productos } from './entities/Productos';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
+import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 
 @UseGuards(JwtGuard) // 🔐 Protege todas las rutas del controlador
 @Controller('productos')
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
+
 
   @Get()
   findAll(): Promise<Productos[]> {

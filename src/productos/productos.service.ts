@@ -44,7 +44,6 @@ export class ProductosService {
 
   }
 
-
   async obtenerProductosVencidos(): Promise<Productos[]> {
     const fechaActual = new Date().toISOString().split('T')[0];
     return this.productosRepo.find({

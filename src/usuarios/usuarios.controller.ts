@@ -14,7 +14,7 @@ import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 import { PermisoGuard } from './../auth/guards/permiso.guard';
 
-@UseGuards(JwtGuard, PermisoGuard) // Protege TODO el controlador con JWT + permisos
+@UseGuards(JwtGuard) // Protege TODO el controlador con JWT + permisos
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
