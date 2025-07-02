@@ -45,7 +45,7 @@ import { AuthModule } from './auth/auth.module';
         port: parseInt(config.get<string>('DB_PORT') || '5432'),
         username: config.get<string>('DB_USERNAME') || 'postgres',
         password: config.get<string>('DB_PASSWORD') || '123456',
-        database: config.get<string>('DB_NAME') || 'bodegaSenaa',
+        database: config.get<string>('DB_NAME') || 'bodegaSena',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
         autoLoadEntities: true,
