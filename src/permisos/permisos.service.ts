@@ -96,4 +96,21 @@ export class PermisosService {
       }
     );
   }
+
+  // ✅ NUEVA: Obtener módulos únicos por rol
+  async obtenerModulosPorRol(idRol: number): Promise<{ id: number; nombreModulo: string }[]> {
+    const modulos = await this.permisoRepository
+      .createQueryBuilder('permiso')
+      .innerJoin('permiso.opcion', 'opcion')
+      .innerJoin('opcion.modulo', 'modulo')
+      .where('permiso.id_rol = :idRol', { idRol })
+      .select([
+        'modulo.id AS id',
+        'modulo.nombre_modulo AS nombreModulo',
+      ])
+      .distinct(true)
+      .getRawMany();
+
+    return modulos;
+  }
 }

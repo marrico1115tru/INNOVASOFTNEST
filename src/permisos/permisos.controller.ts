@@ -21,6 +21,12 @@ import { Request } from 'express';
 export class PermisosController {
   constructor(private readonly permisosService: PermisosService) {}
 
+
+  @Get('modulos/:idRol')
+async getModulosPorRol(@Param('idRol') idRol: number) {
+  return this.permisosService.obtenerModulosPorRol(idRol);
+}
+
   // ✅ Obtener permisos por rol (protección JWT + permisos)
   @UseGuards(JwtGuard, PermisoGuard)
   @Get('rol/:idRol')

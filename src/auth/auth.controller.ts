@@ -31,7 +31,7 @@ export class AuthController {
 
     // 🍪 Guardar token en cookie httpOnly
    res.cookie('token', tokenData.access_token, {
-  httpOnly: true,
+  httpOnly: false,
   sameSite: 'lax',
   secure: false, // solo debe estar en true si usas HTTPS
   maxAge: 1000 * 60 * 60 * 24,
