@@ -17,6 +17,36 @@ export class PermisosService {
     });
   }
 
+  // ✅ Actualización masiva corregida
+  async actualizarPermisosMasivo(permisos: any[]) {
+    const resultados: { id: any; actualizado: boolean; error?: string }[] = [];
+
+    for (const permiso of permisos) {
+      const { id, puedeVer, puedeCrear, puedeEditar, puedeEliminar } = permiso;
+
+      const permisoExistente = await this.permisoRepository.findOne({ where: { id } });
+
+      if (!permisoExistente) {
+        resultados.push({ id, actualizado: false, error: 'Permiso no encontrado' });
+        continue;
+      }
+
+      permisoExistente.puedeVer = puedeVer;
+      permisoExistente.puedeCrear = puedeCrear;
+      permisoExistente.puedeEditar = puedeEditar;
+      permisoExistente.puedeEliminar = puedeEliminar;
+
+      await this.permisoRepository.save(permisoExistente);
+      resultados.push({ id, actualizado: true });
+    }
+
+    return {
+      message: 'Permisos actualizados correctamente',
+      actualizados: resultados.filter(r => r.actualizado).length,
+      errores: resultados.filter(r => !r.actualizado),
+    };
+  }
+
   // ✅ Obtener un permiso por ID
   async findOne(id: number): Promise<Permiso> {
     const permiso = await this.permisoRepository.findOne({
@@ -97,7 +127,7 @@ export class PermisosService {
     );
   }
 
-  // Obtener módulos únicos por rol
+  // ✅ Obtener módulos únicos por rol
   async obtenerModulosPorRol(idRol: number): Promise<{ id: number; nombreModulo: string }[]> {
     const modulos = await this.permisoRepository
       .createQueryBuilder('permiso')

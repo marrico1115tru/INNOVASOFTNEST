@@ -11,7 +11,17 @@ export class ModuloService {
   ) {}
 
   async findAll(): Promise<Modulo[]> {
-    return this.moduloRepository.find({ relations: ['opciones'] });
+    return this.moduloRepository.find();
+  }
+
+  async findAllWithOptions(): Promise<Modulo[]> {
+    return this.moduloRepository.find({
+      relations: ['opciones'],
+      order: {
+        id: 'ASC',
+        opciones: { id: 'ASC' }
+      }
+    });
   }
 
   async findOne(id: number): Promise<Modulo> {

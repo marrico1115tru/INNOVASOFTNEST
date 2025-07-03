@@ -13,7 +13,6 @@ import { Modulo } from './entities/modulo';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 
-@UseGuards(JwtGuard) // 🔐 Protege todo el controlador
 @Controller('modulos')
 export class ModuloController {
   constructor(private readonly moduloService: ModuloService) {}
@@ -21,6 +20,12 @@ export class ModuloController {
   @Get()
   findAll(): Promise<Modulo[]> {
     return this.moduloService.findAll();
+  }
+
+  // ✅ NUEVA RUTA: obtener módulos con sus opciones
+  @Get('con-opciones')
+  findAllWithOptions(): Promise<Modulo[]> {
+    return this.moduloService.findAllWithOptions();
   }
 
   @Get(':id')
@@ -47,7 +52,6 @@ export class ModuloController {
     return this.moduloService.remove(+id);
   }
 
-  // Ruta opcional para verificar autenticación y acceso al usuario
   @Get('usuario/perfil')
   getUsuarioAutenticado(@User() user: any) {
     return {

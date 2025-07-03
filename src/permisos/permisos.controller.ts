@@ -16,10 +16,18 @@ import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 import { Request } from 'express';
+import { UpdatePermisoMasivoDto } from './dto/update-permisos-masivo.dto';
 
 @Controller('permisos')
 export class PermisosController {
   constructor(private readonly permisosService: PermisosService) {}
+
+
+@Put('/actualizar-masivo')
+async actualizarMasivo(@Body() body: UpdatePermisoMasivoDto) {
+  return this.permisosService.actualizarPermisosMasivo(body.permisos);
+}
+
 
   @UseGuards(JwtGuard)
   @Get('modulos/:idRol')
@@ -28,7 +36,7 @@ async getModulosPorRol(@Param('idRol') idRol: number) {
 }
 
   // ✅ Obtener permisos por rol (protección JWT + permisos)
-  @UseGuards(JwtGuard, PermisoGuard)
+  @UseGuards(JwtGuard)
   @Get('rol/:idRol')
   async obtenerPermisosPorRol(@Param('idRol') idRol: string) {
     const permisos = await this.permisosService.obtenerPorRol(+idRol);
