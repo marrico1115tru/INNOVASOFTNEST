@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Permiso } from './entities/permiso';
@@ -10,14 +10,13 @@ export class PermisosService {
     private readonly permisoRepository: Repository<Permiso>,
   ) {}
 
-  // ✅ Obtener todos los permisos
   async findAll(): Promise<Permiso[]> {
     return this.permisoRepository.find({
       relations: ['rol', 'opcion'],
     });
   }
+  
 
-  // ✅ Actualización masiva corregida
   async actualizarPermisosMasivo(permisos: any[]) {
     const resultados: { id: any; actualizado: boolean; error?: string }[] = [];
 
@@ -42,12 +41,11 @@ export class PermisosService {
 
     return {
       message: 'Permisos actualizados correctamente',
-      actualizados: resultados.filter(r => r.actualizado).length,
-      errores: resultados.filter(r => !r.actualizado),
+      actualizados: resultados.filter((r) => r.actualizado).length,
+      errores: resultados.filter((r) => !r.actualizado),
     };
   }
 
-  // ✅ Obtener un permiso por ID
   async findOne(id: number): Promise<Permiso> {
     const permiso = await this.permisoRepository.findOne({
       where: { id },
@@ -61,26 +59,48 @@ export class PermisosService {
     return permiso;
   }
 
-  // ✅ Crear un nuevo permiso
   async create(data: Partial<Permiso>): Promise<Permiso> {
-    const permiso = this.permisoRepository.create(data);
-    return this.permisoRepository.save(permiso);
+    const { id_rol, id_opcion, puedeVer, puedeCrear, puedeEditar, puedeEliminar } = data as any;
+
+    if (!id_rol || !id_opcion) {
+      throw new BadRequestException('id_rol e id_opcion son obligatorios');
+    }
+
+    const yaExiste = await this.permisoRepository.findOne({
+      where: {
+        rol: { id: id_rol },
+        opcion: { id: id_opcion },
+      },
+      relations: ['rol', 'opcion'],
+    });
+
+    if (yaExiste) {
+      throw new BadRequestException('Ya existe un permiso para este rol y esta opción');
+    }
+
+    const nuevo = this.permisoRepository.create({
+      rol: { id: id_rol },
+      opcion: { id: id_opcion },
+      puedeVer: !!puedeVer,
+      puedeCrear: !!puedeCrear,
+      puedeEditar: !!puedeEditar,
+      puedeEliminar: !!puedeEliminar,
+    });
+
+    return await this.permisoRepository.save(nuevo);
   }
 
-  // ✅ Actualizar un permiso existente
   async update(id: number, data: Partial<Permiso>): Promise<Permiso> {
     const permiso = await this.findOne(id);
     Object.assign(permiso, data);
     return this.permisoRepository.save(permiso);
   }
 
-  // ✅ Eliminar permiso
   async remove(id: number): Promise<void> {
     const permiso = await this.findOne(id);
     await this.permisoRepository.remove(permiso);
   }
 
-  // ✅ Obtener permisos por rol
   async getPermisosPorRol(idRol: number): Promise<Permiso[]> {
     return this.permisoRepository.find({
       where: { rol: { id: idRol } },
@@ -88,7 +108,6 @@ export class PermisosService {
     });
   }
 
-  // ✅ Obtener permisos por rol ordenados por opción
   async obtenerPorRol(idRol: number): Promise<Permiso[]> {
     return this.permisoRepository.find({
       where: { rol: { id: idRol } },
@@ -101,7 +120,6 @@ export class PermisosService {
     });
   }
 
-  // ✅ Obtener permisos por ruta y rol
   async getPermisoPorRutaYRol(ruta: string, idRol: number) {
     const permiso = await this.permisoRepository
       .createQueryBuilder('permiso')
@@ -127,17 +145,13 @@ export class PermisosService {
     );
   }
 
-  // ✅ Obtener módulos únicos por rol
   async obtenerModulosPorRol(idRol: number): Promise<{ id: number; nombreModulo: string }[]> {
     const modulos = await this.permisoRepository
       .createQueryBuilder('permiso')
       .innerJoin('permiso.opcion', 'opcion')
       .innerJoin('opcion.modulo', 'modulo')
       .where('permiso.id_rol = :idRol', { idRol })
-      .select([
-        'modulo.id AS id',
-        'modulo.nombre_modulo AS nombreModulo',
-      ])
+      .select(['modulo.id AS id', 'modulo.nombre_modulo AS nombreModulo'])
       .distinct(true)
       .getRawMany();
 

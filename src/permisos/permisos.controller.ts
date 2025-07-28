@@ -35,7 +35,7 @@ async getModulosPorRol(@Param('idRol') idRol: number) {
   return this.permisosService.obtenerModulosPorRol(idRol);
 }
 
-  // ✅ Obtener permisos por rol (protección JWT + permisos)
+  
   @UseGuards(JwtGuard)
   @Get('rol/:idRol')
   async obtenerPermisosPorRol(@Param('idRol') idRol: string) {
@@ -46,7 +46,7 @@ async getModulosPorRol(@Param('idRol') idRol: number) {
     };
   }
 
-  // ✅ Obtener permisos por ruta actual y rol
+
   @UseGuards(JwtGuard)
   @Get('por-ruta')
   async obtenerPermisosPorRuta(
@@ -63,21 +63,21 @@ async getModulosPorRol(@Param('idRol') idRol: number) {
     };
   }
 
-  // ✅ Obtener todos los permisos (administrativo)
+
   @UseGuards(JwtGuard)
   @Get()
   async findAll(): Promise<Permiso[]> {
     return this.permisosService.findAll();
   }
 
-  // ✅ Obtener un permiso por ID
+ 
   @UseGuards(JwtGuard)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Permiso> {
     return this.permisosService.findOne(+id);
   }
 
-  // ✅ Crear un nuevo permiso
+ 
   @UseGuards(JwtGuard)
   @Post()
   async create(
@@ -87,7 +87,7 @@ async getModulosPorRol(@Param('idRol') idRol: number) {
     return this.permisosService.create(permisoData);
   }
 
-  // ✅ Actualizar permiso
+
   @UseGuards(JwtGuard)
   @Put(':id')
   async update(
@@ -97,14 +97,13 @@ async getModulosPorRol(@Param('idRol') idRol: number) {
     return this.permisosService.update(+id, permisoData);
   }
 
-  // ✅ Eliminar permiso
+
   @UseGuards(JwtGuard)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
     return this.permisosService.remove(+id);
   }
 
-  // ✅ Ruta para verificar sesión activa
   @UseGuards(JwtGuard)
   @Get('usuario/perfil')
   getUsuarioAutenticado(@User() user: any) {
@@ -113,4 +112,5 @@ async getModulosPorRol(@Param('idRol') idRol: number) {
       user,
     };
   }
+  
 }

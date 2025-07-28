@@ -36,4 +36,7 @@ export class Opcion {
 
   @OneToMany(() => Permiso, (permiso) => permiso.opcion)
   permisos: Permiso[];
+  nombre: any;
+  ruta: any;
+  visible: any;
 }

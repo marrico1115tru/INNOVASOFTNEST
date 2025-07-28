@@ -15,7 +15,7 @@ import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';
 
-@UseGuards(JwtGuard) // 🔐 Protege todas las rutas del controlador
+@UseGuards(JwtGuard) 
 @Controller('productos')
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
@@ -61,9 +61,9 @@ export class ProductosController {
   @Post()
   create(
     @Body() body: Partial<Productos>,
-    @User() user: any, // 👤 Acceso al usuario autenticado si se necesita
+    @User() user: any, // 
   ): Promise<Productos> {
-    // Puedes usar user.idUsuario si deseas guardar quién creó el producto
+
     return this.productosService.create(body);
   }
 

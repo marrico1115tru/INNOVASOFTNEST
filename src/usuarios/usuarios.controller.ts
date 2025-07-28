@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { Usuarios } from './entities/Usuarios';
@@ -14,7 +15,7 @@ import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 import { PermisoGuard } from './../auth/guards/permiso.guard';
 
-@UseGuards(JwtGuard) // Protege TODO el controlador con JWT + permisos
+@UseGuards(JwtGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -23,30 +24,6 @@ export class UsuariosController {
   @Get()
   findAll(): Promise<Usuarios[]> {
     return this.usuariosService.findAll();
-  }
-
-  // ✅ Obtener un usuario por ID
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<Usuarios> {
-    return this.usuariosService.findOne(+id);
-  }
-
-  // ✅ Crear un nuevo usuario
-  @Post()
-  create(@Body() data: Partial<Usuarios>): Promise<Usuarios> {
-    return this.usuariosService.create(data);
-  }
-
-  // ✅ Actualizar un usuario por ID
-  @Put(':id')
-  update(@Param('id') id: string, @Body() data: Partial<Usuarios>): Promise<Usuarios> {
-    return this.usuariosService.update(+id, data);
-  }
-
-  // ✅ Eliminar un usuario por ID
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.usuariosService.remove(+id);
   }
 
   // ✅ Estadísticas mensuales por rol
@@ -74,5 +51,32 @@ export class UsuariosController {
       message: '✅ Usuario autenticado',
       user,
     };
+  }
+
+  // ✅ Obtener un usuario por ID (DEBE IR AL FINAL)
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Usuarios> {
+    return this.usuariosService.findOne(id);
+  }
+
+  // ✅ Crear un nuevo usuario
+  @Post()
+  create(@Body() data: Partial<Usuarios>): Promise<Usuarios> {
+    return this.usuariosService.create(data);
+  }
+
+  // ✅ Actualizar un usuario por ID
+  @Put(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: Partial<Usuarios>
+  ): Promise<Usuarios> {
+    return this.usuariosService.update(id, data);
+  }
+
+  // ✅ Eliminar un usuario por ID
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.usuariosService.remove(id);
   }
 }

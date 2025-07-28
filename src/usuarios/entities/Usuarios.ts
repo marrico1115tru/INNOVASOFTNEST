@@ -37,7 +37,7 @@ export class Usuarios {
 
   @Column("character varying", { name: "telefono", nullable: true, length: 20 })
   telefono: string | null;
- 
+
   @Column("character varying", { name: "password", length: 100 })
   password: string;
 
@@ -57,9 +57,13 @@ export class Usuarios {
   @JoinColumn([{ name: "id_area", referencedColumnName: "id" }])
   idArea: Areas;
 
-  @ManyToOne(() => FichasFormacion, (fichasFormacion) => fichasFormacion.usuarios)
+  @ManyToOne(() => FichasFormacion, (fichasFormacion) => fichasFormacion.usuarios, {
+    nullable: true,  
+    onDelete: "SET NULL",  
+    onUpdate: "CASCADE",
+  })
   @JoinColumn([{ name: "id_ficha_formacion", referencedColumnName: "id" }])
-  idFichaFormacion: FichasFormacion;
+  idFichaFormacion: FichasFormacion | null;  
 
   @ManyToOne(() => Rol, (rol) => rol.usuarios, {
     onDelete: "RESTRICT",
@@ -67,5 +71,6 @@ export class Usuarios {
   })
   @JoinColumn([{ name: "id_rol", referencedColumnName: "id" }])
   rol: Rol;
+
   permisos: never[];
 }

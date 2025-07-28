@@ -3,15 +3,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Productos } from './entities/Productos';
 import { ProductosService } from './productos.service';
 import { ProductosController } from './productos.controller';
-import { AuthModule } from '../auth/auth.module'; // Importa el módulo de autenticación
+import { AuthModule } from '../auth/auth.module'; 
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Productos]),
-    forwardRef(() => AuthModule), // Necesario si JwtAuthGuard se usa en este módulo
+    forwardRef(() => AuthModule), 
   ],
   controllers: [ProductosController],
   providers: [ProductosService],
-  exports: [ProductosService, TypeOrmModule], // Exporta si otros módulos necesitan acceso
+  exports: [ProductosService, TypeOrmModule], 
 })
 export class ProductosModule {}

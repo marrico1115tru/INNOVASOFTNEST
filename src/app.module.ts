@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+// ✅ Nuevo módulo de correo
+import { MailerModule } from '@nestjs-modules/mailer';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -27,6 +30,7 @@ import { PermisosModule } from './permisos/permisos.module';
 import { ModuloModule } from './modulo/modulo.module';
 import { OpcionesModule } from './opciones/opciones.module';
 import { AuthModule } from './auth/auth.module';
+import { DiegoModule } from './diego/diego.module';
 
 @Module({
   imports: [
@@ -52,6 +56,25 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
 
+    // ✅ Configuración del MailerModule para envío de correos
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        transport: {
+          host: config.get<string>('MAIL_HOST') || 'smtp.gmail.com',
+          port: parseInt(config.get<string>('MAIL_PORT') || '587'),
+          auth: {
+            user: config.get<string>('MAIL_USER') || 'tucorreo@gmail.com',
+            pass: config.get<string>('MAIL_PASS') || 'tu_app_password',
+          },
+        },
+        defaults: {
+          from: '"Soporte SENA" <no-responder@sena.edu.co>',
+        },
+      }),
+    }),
+
     // ✅ Módulos propios
     MunicipiosModule,
     CentroFormacionModule,
@@ -74,6 +97,7 @@ import { AuthModule } from './auth/auth.module';
     ModuloModule,
     OpcionesModule,
     AuthModule,
+    DiegoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
