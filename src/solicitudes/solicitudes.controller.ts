@@ -13,7 +13,7 @@ import { Solicitudes } from './entities/Solicitudes';
 import { JwtGuard } from './../auth/../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 
-@UseGuards(JwtGuard) // 🔐 Protege todas las rutas del controlador
+@UseGuards(JwtGuard) 
 @Controller('solicitudes')
 export class SolicitudesController {
   constructor(private readonly solicitudesService: SolicitudesService) {}

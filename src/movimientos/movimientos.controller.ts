@@ -13,7 +13,7 @@ import { Movimientos } from './entities/Movimientos';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 
-@UseGuards(JwtGuard) // 🔐 Protege todas las rutas con JWT
+@UseGuards(JwtGuard) 
 @Controller('movimientos')
 export class MovimientosController {
   constructor(private readonly movimientosService: MovimientosService) {}
