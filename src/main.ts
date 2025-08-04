@@ -20,7 +20,7 @@ async function bootstrap() {
 
   // ✅ Configuración de CORS (importante para que el frontend acceda con cookies)
   app.enableCors({
-    origin: 'http://localhost:3001', // Cambiar a dominio de producción si aplica
+    origin: 'http://localhost:5173', // Cambiar a dominio de producción si aplica
     credentials: true,               // 🔥 NECESARIO para que se envíen cookies en las peticiones
   });
 
