@@ -13,7 +13,7 @@ export class CategoriasProductos {
   id: number;
 
   @Column("character varying", { name: "nombre", length: 100 })
-  nombre: string;
+  nombres: string;
 
   @Column("character varying", { name: "unpsc", nullable: true, length: 50 })
   unpsc: string | null;
