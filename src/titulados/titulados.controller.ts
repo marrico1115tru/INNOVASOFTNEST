@@ -13,7 +13,7 @@ import { Titulados } from './entities/Titulados';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 
-@UseGuards(JwtGuard) // Protege todo el controlador
+@UseGuards(JwtGuard) 
 @Controller('titulados')
 export class TituladosController {
   constructor(private readonly tituladosService: TituladosService) {}
@@ -43,7 +43,7 @@ export class TituladosController {
     return this.tituladosService.remove(+id);
   }
 
-  // Ejemplo adicional: obtener el usuario autenticado si lo necesitas
+
   @Get('perfil/usuario')
   getUsuarioAutenticado(@User() user: any) {
     return {

@@ -46,7 +46,7 @@ export class SolicitudesController {
     return this.solicitudesService.remove(+id);
   }
 
-  // Ruta de prueba para obtener datos del usuario autenticado
+
   @Get('usuario/perfil')
   getUsuarioAutenticado(@User() user: any) {
     return {

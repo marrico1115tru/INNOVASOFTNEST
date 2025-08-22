@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Municipios } from './entities/Municipios';
 import { MunicipiosService } from './municipios.service';
 import { MunicipiosController } from './municipios.controller';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from './../auth/auth.module';
 
 @Module({
   imports: [

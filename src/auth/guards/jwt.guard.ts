@@ -10,7 +10,7 @@ import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Permiso } from 'src/permisos/entities/permiso';
+import { Permiso } from './../../permisos/entities/permiso';
 
 @Injectable()
 export class JwtGuard implements CanActivate {

@@ -13,7 +13,7 @@ import { ProductosService } from './productos.service';
 import { Productos } from './entities/Productos';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
-import { PermisoGuard } from 'src/auth/guards/permiso.guard';
+
 
 @UseGuards(JwtGuard) 
 @Controller('productos')

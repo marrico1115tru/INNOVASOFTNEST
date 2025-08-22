@@ -39,4 +39,5 @@ export class Opcion {
   nombre: any;
   ruta: any;
   visible: any;
+  rutaBackend: string;
 }

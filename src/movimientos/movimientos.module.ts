@@ -5,7 +5,7 @@ import { MovimientosService } from './movimientos.service';
 import { MovimientosController } from './movimientos.controller';
 import { Inventario } from '../inventario/entities/Inventario';
 import { InventarioModule } from '../inventario/inventario.module';
-import { AuthModule } from 'src/auth/auth.module'; // ✅ Importación del módulo de autenticación
+import { AuthModule } from './../auth/auth.module'; 
 
 @Module({
   imports: [
