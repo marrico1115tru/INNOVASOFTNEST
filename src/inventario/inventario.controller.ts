@@ -14,7 +14,7 @@ import { UpdateStockDto } from './dto/update-stock.dto';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 
-@UseGuards(JwtGuard) // 🔐 Protege todo el controlador con JWT
+@UseGuards(JwtGuard) 
 @Controller('inventario')
 export class InventarioController {
   constructor(private readonly inventarioService: InventarioService) {}
@@ -32,7 +32,7 @@ export class InventarioController {
   @Post()
   create(
     @Body() data: Partial<Inventario>,
-    @User() user: any, // 👤 Puedes usar user.idUsuario si necesitas registrar quién crea
+    @User() user: any, 
   ): Promise<Inventario> {
     return this.inventarioService.create(data);
   }
@@ -54,12 +54,12 @@ export class InventarioController {
   moverStock(
     @Param('id') id: string,
     @Body() data: UpdateStockDto,
-    @User() user: any, // opcional: puedes registrar el usuario que hizo la acción
+    @User() user: any, 
   ): Promise<Inventario> {
     return this.inventarioService.moverStock(+id, data);
   }
 
-  // Ruta opcional para ver el usuario autenticado
+  
   @Get('usuario/perfil')
   getUsuarioAutenticado(@User() user: any) {
     return {
