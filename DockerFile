@@ -1,43 +1,18 @@
 # ---- Etapa de Construcción (Builder) ----
-# Esta etapa instala todas las dependencias (incluidas las de desarrollo)
-# y compila tu código TypeScript a JavaScript.
 FROM node:20.18.1-alpine3.19 AS builder
-
 WORKDIR /app
-
-# Copia los archivos de dependencias y los instala
 COPY package*.json ./
 RUN npm install
-
-# Copia el resto de tu código fuente (incluyendo tsconfig.json)
 COPY . .
-
-# Compila la aplicación
 RUN npm run build
 
-
 # ---- Etapa de Producción (Final) ----
-# Esta etapa crea la imagen final que se ejecutará en producción.
-# Es más ligera porque no incluye las dependencias de desarrollo.
 FROM node:20.18.1-alpine3.19
-
 WORKDIR /app
-
-# Copia solo el package.json para instalar las dependencias de producción
 COPY package*.json ./
 RUN npm install --omit=dev
-
-# --- LA CORRECCIÓN FINAL ---
-# Copiamos los archivos de configuración de TypeScript desde la etapa de construcción.
-# ts-node los necesita para saber cómo ejecutar los archivos .ts de las migraciones.
 COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/tsconfig.build.json ./
-
-# Copiamos el código ya compilado (para 'npm run start:prod')
 COPY --from=builder /app/dist ./dist
-
-# Copiamos el código fuente (para 'npm run migration:run' que usa ts-node)
 COPY --from=builder /app/src ./src
-
-# El comando por defecto para iniciar la aplicación (aunque docker-compose lo sobreescribirá)
 CMD ["npm", "run", "start:prod"]
