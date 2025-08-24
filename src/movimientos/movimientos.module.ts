@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Movimientos } from './entities/Movimientos';
+import { Movimientos } from './entities/Movimientos.entity';
 import { MovimientosService } from './movimientos.service';
 import { MovimientosController } from './movimientos.controller';
-import { Inventario } from '../inventario/entities/Inventario';
+import { Inventario } from '../inventario/entities/Inventario.entity';
 import { InventarioModule } from '../inventario/inventario.module';
 import { AuthModule } from './../auth/auth.module'; 
 

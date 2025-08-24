@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EntregaMaterial } from './entities/EntregaMaterial';
+import { EntregaMaterial } from './entities/EntregaMaterial.entity';
 import { EntregaMaterialService } from './entrega_material.service';
 import { EntregaMaterialController } from './entrega_material.controller';
 import { AuthModule } from '../auth/auth.module'; // Importa AuthModule para usar JwtAuthGuard

@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { FichasFormacionService } from './fichas_formacion.service';
-import { FichasFormacion } from './entities/FichasFormacion';
+import { FichasFormacion } from './entities/FichasFormacion.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

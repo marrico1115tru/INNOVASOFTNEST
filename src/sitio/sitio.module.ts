@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Sitio } from './entities/Sitio';
+import { Sitio } from './entities/Sitio.entity';
 import { SitioService } from './sitio.service';
 import { SitioController } from './sitio.controller';
 import { AuthModule } from '../auth/auth.module'; // ✅ Módulo de autenticación para JwtAuthGuard

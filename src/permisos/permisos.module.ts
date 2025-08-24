@@ -2,9 +2,9 @@ import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PermisosService } from './permisos.service';
 import { PermisosController } from './permisos.controller';
-import { Permiso } from './entities/permiso';
-import { Rol } from '../roles/entities/rol';
-import { Opcion } from '../opciones/entities/opcion';
+import { Permiso } from './entities/permiso.entity';
+import { Rol } from '../roles/entities/rol.entity';
+import { Opcion } from '../opciones/entities/opcion.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({

@@ -7,9 +7,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Sedes } from "../../sedes/entities/Sedes";
-import { Sitio } from "../../sitio/entities/Sitio";
-import { Usuarios } from "../../usuarios/entities/Usuarios";
+import { Sedes } from "../../sedes/entities/Sedes.entity";
+import { Sitio } from "../../sitio/entities/Sitio.entity";
+import { Usuarios } from "../../usuarios/entities/usuarios.entity";
 
 
 @Entity("areas", { schema: "public" })

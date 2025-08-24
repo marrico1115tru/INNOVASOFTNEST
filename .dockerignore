@@ -1,1 +1,9 @@
+# Ignorar las dependencias, se instalarán dentro del contenedor
 node_modules
+
+# Ignorar la carpeta de compilación local, se generará dentro del contenedor
+dist
+
+# Archivos de entorno y configuración de IDE
+.env
+.vscode/

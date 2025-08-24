@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProductosService } from './productos.service';
-import { Productos } from './entities/Productos';
+import { Productos } from './entities/Productos.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

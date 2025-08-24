@@ -7,11 +7,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { EntregaMaterial } from "../../entrega_material/entities/EntregaMaterial";
-import { FichasFormacion } from "../../fichas_formacion/entities/FichasFormacion";
-import { Solicitudes } from "../../solicitudes/entities/Solicitudes";
-import { Areas } from "../../areas/entities/Areas";
-import { Rol } from "../../roles/entities/rol";
+import { EntregaMaterial } from "../../entrega_material/entities/EntregaMaterial.entity";
+import { FichasFormacion } from "../../fichas_formacion/entities/FichasFormacion.entity";
+import { Solicitudes } from "../../solicitudes/entities/Solicitudes.entity";
+import { Areas } from "../../areas/entities/Areas.entity";
+import { Rol } from "../../roles/entities/rol.entity";
 
 @Entity("usuarios", { schema: "public" })
 export class Usuarios {

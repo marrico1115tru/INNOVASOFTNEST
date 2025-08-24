@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Inventario } from './entities/Inventario';
+import { Inventario } from './entities/Inventario.entity';
 import { InventarioService } from './inventario.service';
 import { InventarioController } from './inventario.controller';
 import { AuthModule } from '../auth/auth.module'; // ✅ Asegura que el guardia JWT funcione

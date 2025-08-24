@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoriasProductos } from './entities/CategoriasProductos';
+import { CategoriasProductos } from './entities/CategoriasProductos.entity';
 import { CategoriasProductosService } from './categorias_productos.service';
 import { CategoriasProductosController } from './categorias_productos.controller';
 import { AuthModule } from '../auth/auth.module'; // Asegura acceso a JwtService desde el AuthModule

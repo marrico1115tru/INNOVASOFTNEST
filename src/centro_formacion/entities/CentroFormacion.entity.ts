@@ -7,8 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Municipios } from "../../municipios/entities/Municipios";
-import { Sedes } from "../../sedes/entities/Sedes";
+import { Municipios } from "../../municipios/entities/Municipios.entity";
+import { Sedes } from "../../sedes/entities/Sedes.entity";
 
 @Entity("centro_formacion", { schema: "public" })
 export class CentroFormacion {

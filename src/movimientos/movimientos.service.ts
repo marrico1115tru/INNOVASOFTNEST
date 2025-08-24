@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Movimientos } from './entities/Movimientos';
-import { Inventario } from './../inventario/entities/Inventario';
+import { Movimientos } from './entities/Movimientos.entity';
+import { Inventario } from '../inventario/entities/Inventario.entity';
 
 @Injectable()
 export class MovimientosService {

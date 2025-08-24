@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { EntregaMaterial } from "../../entrega_material/entities/EntregaMaterial";
-import { Inventario } from "../../inventario/entities/Inventario";
+import { EntregaMaterial } from "../../entrega_material/entities/EntregaMaterial.entity";
+import { Inventario } from "../../inventario/entities/Inventario.entity";
 
 
 @Entity("movimientos", { schema: "public" })

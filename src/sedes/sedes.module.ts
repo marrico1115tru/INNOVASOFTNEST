@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Sedes } from './entities/Sedes';
+import { Sedes } from './entities/Sedes.entity';
 import { SedesService } from './sedes.service';
 import { SedesController } from './sedes.controller';
 import { AuthModule } from '../auth/auth.module'; // ✅ Importar el módulo de autenticación

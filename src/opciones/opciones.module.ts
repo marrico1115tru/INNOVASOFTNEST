@@ -2,8 +2,8 @@ import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OpcionesService } from './opciones.service';
 import { OpcionesController } from './opciones.controller';
-import { Opcion } from './entities/opcion';
-import { Modulo } from './../modulo/entities/modulo';
+import { Opcion } from './entities/opcion.entity';
+import { Modulo } from '../modulo/entities/modulo.entity';
 import { AuthModule } from '../auth/auth.module'; // Importa AuthModule para habilitar JwtAuthGuard
 
 @Module({

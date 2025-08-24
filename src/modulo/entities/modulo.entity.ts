@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Opcion } from '../../opciones/entities/opcion';
+import { Opcion } from '../../opciones/entities/opcion.entity';
 
 @Entity('modulos', { schema: 'public' })
 export class Modulo {

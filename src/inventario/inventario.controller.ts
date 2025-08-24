@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { InventarioService } from './inventario.service';
-import { Inventario } from './entities/Inventario';
+import { Inventario } from './entities/Inventario.entity';
 import { UpdateStockDto } from './dto/update-stock.dto';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';

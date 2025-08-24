@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { CentroFormacion } from "../../centro_formacion/entities/CentroFormacion";
+import { CentroFormacion } from "../../centro_formacion/entities/CentroFormacion.entity";
 
 
 @Entity("municipios", { schema: "public" })

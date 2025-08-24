@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MovimientosService } from './../movimientos/movimientos.service';
-import { Movimientos } from './entities/Movimientos';
+import { Movimientos } from './entities/Movimientos.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

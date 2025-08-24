@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Permiso } from './entities/permiso';
+import { Permiso } from './entities/permiso.entity';
 
 @Injectable()
 export class PermisosService {

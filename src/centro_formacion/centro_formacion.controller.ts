@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CentroFormacionService } from './centro_formacion.service';
-import { CentroFormacion } from './entities/CentroFormacion';
+import { CentroFormacion } from './entities/CentroFormacion.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

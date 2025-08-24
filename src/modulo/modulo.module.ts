@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Modulo } from './entities/modulo';
+import { Modulo } from './entities/modulo.entity';
 import { ModuloService } from './modulo.service';
 import { ModuloController } from './modulo.controller';
 import { AuthModule } from '../auth/auth.module'; // Importa AuthModule si usas JwtAuthGuard

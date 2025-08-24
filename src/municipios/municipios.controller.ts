@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MunicipiosService } from './municipios.service';
-import { Municipios } from './entities/Municipios';
+import { Municipios } from './entities/Municipios.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

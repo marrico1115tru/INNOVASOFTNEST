@@ -4,8 +4,8 @@ import {
   Column,
   OneToMany,
 } from 'typeorm';
-import { Usuarios } from '../../usuarios/entities/Usuarios';
-import { Permiso } from '../../permisos/entities/permiso';
+import { Usuarios } from '../../usuarios/entities/usuarios.entity';
+import { Permiso } from '../../permisos/entities/permiso.entity';
 
 @Entity('roles', { schema: 'public' })
 export class Rol {

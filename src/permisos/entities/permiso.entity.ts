@@ -5,8 +5,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Rol } from '../../roles/entities/rol';
-import { Opcion } from '../../opciones/entities/opcion';
+import { Rol } from '../../roles/entities/rol.entity';
+import { Opcion } from '../../opciones/entities/opcion.entity';
 
 @Entity('permisos', { schema: 'public' })
 export class Permiso {

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan, Between } from 'typeorm';
-import { Productos } from './entities/Productos';
+import { Productos } from './entities/Productos.entity';
 
 @Injectable()
 export class ProductosService {

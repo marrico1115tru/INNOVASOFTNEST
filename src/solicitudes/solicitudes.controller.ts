@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SolicitudesService } from './solicitudes.service';
-import { Solicitudes } from './entities/Solicitudes';
+import { Solicitudes } from './entities/Solicitudes.entity';
 import { JwtGuard } from './../auth/../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { TipoSitioService } from './tipo_sitio.service';
-import { TipoSitio } from './entities/TipoSitio';
+import { TipoSitio } from './entities/TipoSitio.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

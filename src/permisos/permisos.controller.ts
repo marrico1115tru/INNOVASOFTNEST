@@ -11,7 +11,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { PermisosService } from './permisos.service';
-import { Permiso } from './entities/permiso';
+import { Permiso } from './entities/permiso.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 import { PermisoGuard } from 'src/auth/guards/permiso.guard';

@@ -7,8 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Areas } from "../../areas/entities/Areas";
-import { CentroFormacion } from "../../centro_formacion/entities/CentroFormacion";
+import { Areas } from "../../areas/entities/Areas.entity";
+import { CentroFormacion } from "../../centro_formacion/entities/CentroFormacion.entity";
 
 
 @Entity("sedes", { schema: "public" })

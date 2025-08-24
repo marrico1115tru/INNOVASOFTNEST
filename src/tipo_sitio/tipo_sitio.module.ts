@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TipoSitio } from './entities/TipoSitio';
+import { TipoSitio } from './entities/TipoSitio.entity';
 import { TipoSitioService } from './tipo_sitio.service';
 import { TipoSitioController } from './tipo_sitio.controller';
 import { AuthModule } from '../auth/auth.module'; // Si usas autenticación con JWT

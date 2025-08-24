@@ -8,8 +8,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UsuariosService } from './../usuarios/usuarios.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Permiso } from './../permisos/entities/permiso';
-import { Opcion } from './../opciones/entities/opcion';
+import { Permiso } from '../permisos/entities/permiso.entity';
+import { Opcion } from '../opciones/entities/opcion.entity';
 import { MailerService } from '@nestjs-modules/mailer';
 import { randomInt } from 'crypto';
 

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Opcion } from './entities/opcion';
+import { Opcion } from './entities/opcion.entity';
 
 @Injectable()
 export class OpcionesService {

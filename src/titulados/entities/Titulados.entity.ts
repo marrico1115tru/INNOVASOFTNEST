@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { FichasFormacion } from "../../fichas_formacion/entities/FichasFormacion";
+import { FichasFormacion } from "../../fichas_formacion/entities/FichasFormacion.entity";
 
 
 @Entity("titulados", { schema: "public" })

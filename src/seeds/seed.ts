@@ -3,9 +3,9 @@ import { AppModule } from '../app.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Rol } from '../roles/entities/rol';
-import { Usuarios } from '../usuarios/entities/Usuarios';
-import { Areas } from '../areas/entities/Areas';
+import { Rol } from '../roles/entities/rol.entity';
+import { Usuarios } from '../usuarios/entities/usuarios.entity';
+import { Areas } from '../areas/entities/Areas.entity';
 import * as bcrypt from 'bcrypt';
 
 async function runSeeder() {

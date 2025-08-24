@@ -7,9 +7,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { EntregaMaterial } from "../../entrega_material/entities/EntregaMaterial";
-import { Titulados } from "../../titulados/entities/Titulados";
-import { Usuarios } from "../../usuarios/entities/Usuarios";
+import { EntregaMaterial } from "../../entrega_material/entities/EntregaMaterial.entity";
+import { Titulados } from "../../titulados/entities/Titulados.entity";
+import { Usuarios } from "../../usuarios/entities/usuarios.entity";
 
 
 @Entity("fichas_formacion", { schema: "public" })

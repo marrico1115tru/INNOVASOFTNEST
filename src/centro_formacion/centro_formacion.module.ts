@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CentroFormacion } from './entities/CentroFormacion';
+import { CentroFormacion } from './entities/CentroFormacion.entity';
 import { CentroFormacionService } from './centro_formacion.service';
 import { CentroFormacionController } from './centro_formacion.controller';
 import { AuthModule } from '../auth/auth.module';

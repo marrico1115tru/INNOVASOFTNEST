@@ -10,7 +10,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { Usuarios } from './entities/Usuarios';
+import { Usuarios } from './entities/usuarios.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 import { PermisoGuard } from './../auth/guards/permiso.guard';

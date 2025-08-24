@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Rol } from '../roles/entities/rol';
-import { Usuarios } from '../usuarios/entities/Usuarios';
-import { Areas } from '../areas/entities/Areas';
+import { Rol } from '../roles/entities/rol.entity';
+import { Usuarios } from '../usuarios/entities/usuarios.entity';
+import { Areas } from '../areas/entities/Areas.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';

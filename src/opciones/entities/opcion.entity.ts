@@ -6,8 +6,8 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { Modulo } from '../../modulo/entities/modulo';
-import { Permiso } from '../../permisos/entities/permiso';
+import { Modulo } from '../../modulo/entities/modulo.entity';
+import { Permiso } from '../../permisos/entities/permiso.entity';
 
 @Entity('opciones', { schema: 'public' })
 export class Opcion {

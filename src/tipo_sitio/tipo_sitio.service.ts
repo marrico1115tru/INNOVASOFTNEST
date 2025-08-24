@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TipoSitio } from './entities/TipoSitio';
+import { TipoSitio } from './entities/TipoSitio.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

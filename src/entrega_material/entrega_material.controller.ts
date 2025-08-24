@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { EntregaMaterialService } from './entrega_material.service';
-import { EntregaMaterial } from './entities/EntregaMaterial';
+import { EntregaMaterial } from './entities/EntregaMaterial.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 

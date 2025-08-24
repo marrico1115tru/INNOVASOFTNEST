@@ -5,15 +5,17 @@ import { UsuariosModule } from './../usuarios/usuarios.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Permiso } from './../permisos/entities/permiso';
-import { Opcion } from './../opciones/entities/opcion';
+import { Permiso } from '../permisos/entities/permiso.entity';
+import { Opcion } from '../opciones/entities/opcion.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
+import { Usuarios } from '../usuarios/entities/usuarios.entity'; // <-- La importación clave
 
 @Module({
   imports: [
     UsuariosModule,
     ConfigModule,
-    TypeOrmModule.forFeature([Permiso, Opcion]),
+    // La corrección definitiva está aquí
+    TypeOrmModule.forFeature([Permiso, Opcion, Usuarios]),
 
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -32,7 +34,7 @@ import { JwtGuard } from './../auth/guards/jwt.guard';
     AuthService,
     JwtModule,
     JwtGuard,
-    TypeOrmModule, // ✅ Agregado para que se pueda usar PermisoRepository en JwtGuard
+    TypeOrmModule,
   ],
 })
 export class AuthModule {}

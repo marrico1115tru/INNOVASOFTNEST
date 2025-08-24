@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Sitio } from "../../sitio/entities/Sitio";
+import { Sitio } from "../../sitio/entities/Sitio.entity";
 
 @Entity("tipo_sitio", { schema: "public" })
 export class TipoSitio {

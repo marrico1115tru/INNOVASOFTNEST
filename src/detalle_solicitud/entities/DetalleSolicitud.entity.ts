@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Productos } from "../../productos/entities/Productos";
-import { Solicitudes } from "../../solicitudes/entities/Solicitudes";
+import { Productos } from "../../productos/entities/Productos.entity";
+import { Solicitudes } from "../../solicitudes/entities/Solicitudes.entity";
 
 
 @Entity("detalle_solicitud", { schema: "public" })

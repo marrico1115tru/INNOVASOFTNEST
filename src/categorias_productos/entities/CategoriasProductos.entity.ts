@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Productos } from "../../productos/entities/Productos";
+import { Productos } from "../../productos/entities/Productos.entity";
 
 @Entity("categorias_productos", { schema: "public" })
 export class CategoriasProductos {

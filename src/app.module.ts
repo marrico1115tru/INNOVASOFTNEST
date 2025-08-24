@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
-// ✅ Nuevo módulo de correo
 import { MailerModule } from '@nestjs-modules/mailer';
+
+// ✅ PASO 1: Importa la configuración del archivo data-source
+import { dataSourceOptions } from './data-source';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-// Módulos propios
+// Módulos propios (estos no cambian)
 import { MunicipiosModule } from './municipios/municipios.module';
 import { CentroFormacionModule } from './centro_formacion/centro_formacion.module';
 import { SedesModule } from './sedes/sedes.module';
@@ -34,29 +35,16 @@ import { DiegoModule } from './diego/diego.module';
 
 @Module({
   imports: [
-    // ✅ Variables de entorno globales
+    // Variables de entorno globales
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // ✅ Configuración de la conexión a la base de datos
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get<string>('DB_HOST') || 'localhost',
-        port: parseInt(config.get<string>('DB_PORT') || '5432'),
-        username: config.get<string>('DB_USERNAME') || 'postgres',
-        password: config.get<string>('DB_PASSWORD') || '123456',
-        database: config.get<string>('DB_NAME') || 'bodegaSena',
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
-        autoLoadEntities: true,
-      }),
-    }),
+    // ✅ PASO 2: Utiliza la configuración importada. Es más simple y directo.
+    // La opción 'synchronize: false' ahora está definida en 'dataSourceOptions'.
+    TypeOrmModule.forRoot(dataSourceOptions),
 
-    // ✅ Configuración del MailerModule para envío de correos
+    // La configuración del MailerModule permanece igual, ya que no afecta a la base de datos.
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -75,7 +63,7 @@ import { DiegoModule } from './diego/diego.module';
       }),
     }),
 
-    // ✅ Módulos propios
+    // Tus módulos propios no necesitan cambios
     MunicipiosModule,
     CentroFormacionModule,
     SedesModule,
