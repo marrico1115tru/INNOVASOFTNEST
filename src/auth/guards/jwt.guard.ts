@@ -24,7 +24,6 @@ export class JwtGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = request.cookies?.token;
 
-    console.log('🛡️ TOKEN RECIBIDO:', token);
     if (!token) {
       throw new UnauthorizedException('Token no encontrado en cookies');
     }
@@ -36,71 +35,72 @@ export class JwtGuard implements CanActivate {
 
     try {
       const decoded = jwt.verify(token, secret) as any;
+      request['user'] = decoded;
 
       const userRolId = decoded?.rol?.id;
       if (!userRolId) {
-        throw new UnauthorizedException('Rol inválido en token');
+        throw new UnauthorizedException('Rol inválido en el token');
       }
+      
+      const requestedPath = request.path;
 
-      // 🛣️ Construir ruta completa
-      const path = request.route?.path || request.url;
-      const baseUrl = request.baseUrl || '';
-      const fullRoute = `${baseUrl}${path}`;
+      console.log('\n--- 🛡️  INICIO VALIDACIÓN JWTGUARD 🛡️  ---');
+      console.log(`[INFO] Usuario: ${decoded.email}, Rol ID: ${userRolId}`);
+      console.log(`[INFO] Ruta de API solicitada: ${request.method} ${requestedPath}`);
 
-      // 👉 Rutas que no requieren validación de permisos (solo JWT)
-      const rutasPublicas = [
-        '/permisos/modulos', // ejemplo: /permisos/modulos/:idRol
-        '/auth/refresh',      // si usas refresh token
-        '/auth/profile',      // perfil de usuario
+      const rutasExcluidasDePermisos = [
+        '/permisos/modulos',
+        '/auth/profile',
+        '/auth/refresh',
       ];
-      const esRutaPublica = rutasPublicas.some((ruta) =>
-        fullRoute.startsWith(ruta)
+
+      const esRutaExcluida = rutasExcluidasDePermisos.some((ruta) =>
+        requestedPath.startsWith(ruta),
       );
 
-      if (esRutaPublica) {
-        request['user'] = decoded;
-        console.log('🔓 Ruta pública permitida sin validar permisos:', fullRoute);
+      if (esRutaExcluida) {
+        console.log(`[OK] ✅ Ruta ${requestedPath} está excluida. Acceso concedido.`);
+        console.log('--- 🛡️  FIN VALIDACIÓN JWTGUARD 🛡️  ---\n');
         return true;
       }
 
-      // 🔐 Validar permisos en base de datos
-      const permisos = await this.permisosRepository.find({
+      const permisosDelRol = await this.permisosRepository.find({
         where: { rol: { id: userRolId } },
         relations: ['opcion'],
       });
 
-      const permisosFormateados = permisos.map((permiso) => ({
-        ruta: permiso.opcion?.rutaFrontend || '',
-        puede_ver: permiso.puedeVer,
-        puede_crear: permiso.puedeCrear,
-        puede_editar: permiso.puedeEditar,
-        puede_eliminar: permiso.puedeEliminar,
-      }));
+      const rutasPermitidas = permisosDelRol.map(
+        (p) => p.opcion?.rutaFrontend || '',
+      ).filter(Boolean); // Filtra posibles valores nulos o vacíos
+      
+      console.log('[DB] El rol tiene permisos para estas rutas base de API:', rutasPermitidas);
 
-      console.log('🛣️ Ruta solicitada:', fullRoute);
-      console.log('🔑 Permisos del rol:', permisosFormateados);
-
-      const permisoRuta = permisosFormateados.find((p) =>
-        fullRoute.startsWith(p.ruta)
-      );
-
-      if (!permisoRuta) {
-        throw new ForbiddenException(
-          'No tienes ningún permiso para acceder a esta ruta'
-        );
+      let permisoConcedido = false;
+      for (const rutaBase of rutasPermitidas) {
+        const match = requestedPath.startsWith(rutaBase);
+        console.log(`[COMPROBANDO] ¿"${requestedPath}" empieza con "${rutaBase}"? -> ${match}`);
+        if (match) {
+          permisoConcedido = true;
+          break; // Si encontramos una coincidencia, no necesitamos seguir buscando
+        }
       }
 
-      if (!permisoRuta.puede_ver) {
-        throw new ForbiddenException(
-          'No tienes permiso de lectura (puede_ver) en esta ruta'
-        );
+      if (!permisoConcedido) {
+        console.log(`[DENEGADO] ❌ El rol ${userRolId} no tiene permiso para la ruta ${requestedPath}.`);
+        console.log('--- 🛡️  FIN VALIDACIÓN JWTGUARD 🛡️  ---\n');
+        throw new ForbiddenException('No tienes permiso para acceder a este recurso.');
       }
 
-      request['user'] = decoded;
+      console.log(`[OK] ✅ Permiso encontrado para la ruta ${requestedPath}. Acceso concedido.`);
+      console.log('--- 🛡️  FIN VALIDACIÓN JWTGUARD 🛡️  ---\n');
       return true;
+
     } catch (error) {
-      console.error('❌ Error en verificación de token:', error.message);
-      throw new UnauthorizedException('Token inválido o expirado');
+      if (error instanceof ForbiddenException) {
+        throw error;
+      }
+      console.error(`[ERROR] ❌ Error en JwtGuard: ${error.message}`);
+      throw new UnauthorizedException('Token inválido o expirado.');
     }
   }
 }

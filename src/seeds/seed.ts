@@ -1,10 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../app.module';  
+import { AppModule } from '../app.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-// --- ¡Importa todas las entidades que necesitas! ---
 import { Rol } from '../roles/entities/rol.entity';
 import { Usuarios } from '../usuarios/entities/usuarios.entity';
 import { Areas } from '../areas/entities/Areas.entity';
@@ -17,146 +16,154 @@ async function runSeeder() {
 
   console.log('--- 🚀 Iniciando Seeder ---');
 
-  // --- Obtener los repositorios ---
+  // Repositorios
   const rolRepo = appContext.get<Repository<Rol>>(getRepositoryToken(Rol));
-  const usuarioRepo = appContext.get<Repository<Usuarios>>(getRepositoryToken(Usuarios));
+  const usuarioRepo = appContext.get<Repository<Usuarios>>(
+    getRepositoryToken(Usuarios),
+  );
   const areaRepo = appContext.get<Repository<Areas>>(getRepositoryToken(Areas));
-  const moduloRepo = appContext.get<Repository<Modulo>>(getRepositoryToken(Modulo));
-  const opcionRepo = appContext.get<Repository<Opcion>>(getRepositoryToken(Opcion));
-  const permisoRepo = appContext.get<Repository<Permiso>>(getRepositoryToken(Permiso));
+  const moduloRepo = appContext.get<Repository<Modulo>>(
+    getRepositoryToken(Modulo),
+  );
+  const opcionRepo = appContext.get<Repository<Opcion>>(
+    getRepositoryToken(Opcion),
+  );
+  const permisoRepo = appContext.get<Repository<Permiso>>(
+    getRepositoryToken(Permiso),
+  );
 
-  // --- 1. Crear Rol de Administrador ---
+  // --- 1. Crear Rol y Usuario Administrador ---
   let rolAdmin = await rolRepo.findOne({ where: { nombreRol: 'ADMINISTRADOR' } });
   if (!rolAdmin) {
-    rolAdmin = rolRepo.create({ nombreRol: 'ADMINISTRADOR' });
-    await rolRepo.save(rolAdmin);
+    rolAdmin = await rolRepo.save(
+      rolRepo.create({ nombreRol: 'ADMINISTRADOR' }),
+    );
     console.log('✅ Rol ADMINISTRADOR creado');
   } else {
     console.log('ℹ️  Rol ADMINISTRADOR ya existe');
   }
 
-  // --- 2. Crear Área de Administración ---
-  let areaAdmin = await areaRepo.findOne({ where: { nombreArea: 'Administración' } });
+  let areaAdmin = await areaRepo.findOne({
+    where: { nombreArea: 'Administración' },
+  });
   if (!areaAdmin) {
-    areaAdmin = areaRepo.create({ nombreArea: 'Administración' });
-    await areaRepo.save(areaAdmin);
-    console.log('✅ Área Administración creada');
-  } else {
-    console.log('ℹ️  Área Administración ya existe');
+    areaAdmin = await areaRepo.save(
+      areaRepo.create({ nombreArea: 'Administración' }),
+    );
   }
 
-  // --- 3. Crear Usuario Administrador ---
-  let adminUser = await usuarioRepo.findOne({ where: { email: 'admin@sena.edu.co' } });
+  let adminUser = await usuarioRepo.findOne({
+    where: { email: 'admin@sena.edu.co' },
+  });
   if (!adminUser) {
     const hashedPass = await bcrypt.hash('admin123', 10);
-    adminUser = usuarioRepo.create({
-      nombre: 'Administrador',
-      email: 'admin@sena.edu.co',
-      password: hashedPass,
-      rol: rolAdmin,
-      idArea: areaAdmin,
-    });
-    await usuarioRepo.save(adminUser);
-    console.log('✅ Usuario admin@sena.edu.co creado con contraseña "admin123"');
+    await usuarioRepo.save(
+      usuarioRepo.create({
+        nombre: 'Administrador',
+        email: 'admin@sena.edu.co',
+        password: hashedPass,
+        rol: rolAdmin,
+        idArea: areaAdmin,
+      }),
+    );
+    console.log('✅ Usuario admin@sena.edu.co creado');
   } else {
     console.log('ℹ️  Usuario admin@sena.edu.co ya existe');
   }
 
-  // --- 4. Crear Módulos y Opciones (Basado en tus capturas) ---
+  // --- 2. Definición de Módulos y Opciones con las RUTAS DE LA API ---
   const modulosYopciones = {
-    'Home': [
-        { nombre: 'Inicio', ruta: '/inicio' },
-        { nombre: 'Inicio Dashboard', ruta: '/InicioDash' }
+    Administracion: [
+      { nombre: 'Inicio Dashboard', ruta: '/InicioDash' }, // <-- AÑADIDO AQUÍ
+      { nombre: 'Gestionar Usuarios', ruta: '/usuarios' },
+      { nombre: 'Gestionar Roles', ruta: '/roles' },
+      { nombre: 'Gestionar Permisos', ruta: '/permisos' },
     ],
-    'Productos': [
-        { nombre: 'Ver Productos', ruta: '/productos/listar' },
-        { nombre: 'Categorias Productos', ruta: '/CategoriasProductosPage' },
-        { nombre: 'Inventario', ruta: '/InventarioPage' }
+    Productos: [
+      { nombre: 'Ver Productos', ruta: '/productos' },
+      { nombre: 'Gestionar Categorías', ruta: '/categorias-productos' },
+      { nombre: 'Gestionar Inventario', ruta: '/inventario' },
     ],
-    'Solicitudes': [
-        { nombre: 'Solicitudes', ruta: '/SolicitudesPage' },
-        { nombre: 'Detalle de Solicitud', ruta: '/DetalleSolicitudPage' },
-        { nombre: 'Entrega de Material', ruta: '/EntregaMaterialPage' },
-        { nombre: 'Movimientos de Inventario', ruta: '/MovimientoInventarioPage' }
+    Solicitudes: [
+      { nombre: 'Gestionar Solicitudes', ruta: '/solicitudes' },
+      { nombre: 'Gestionar Entregas', ruta: '/entrega-material' },
+      { nombre: 'Gestionar Movimientos', ruta: '/movimientos' },
+      { nombre: 'Gestionar Detalles de Solicitud', ruta: '/detalle-solicitud' },
     ],
-    'Estadisticas': [
-        { nombre: 'Estadisticas Productos', ruta: '/VistaProductos' },
-        { nombre: 'Estadisticas Usuarios', ruta: '/VistaEstadisticasUsuarios' },
-        { nombre: 'Estadisticas Sitios', ruta: '/VistaEstadisticasSitios' }
+    Estadisticas: [
+      { nombre: 'Estadisticas Productos', ruta: '/VistaProductos' },
+      { nombre: 'Estadisticas Usuarios', ruta: '/VistaEstadisticasUsuarios' },
+      { nombre: 'Estadisticas Sitios', ruta: '/VistaEstadisticasSitios' },
     ],
     'Reportes de Productos': [
-        { nombre: 'Productos por Sitio', ruta: '/report/productosRep/ProductosPorSitio' },
-        { nombre: 'Productos Proximos a Vencer', ruta: '/report/productosRep/ProductosVencimiento' }
+      { nombre: 'Productos por Sitio', ruta: '/report/productosRep/ProductosPorSitio' },
+      { nombre: 'Productos Vencidos', ruta: '/report/productosRep/ProductosVencidos' },
+      { nombre: 'Productos Proximos a Vencer', ruta: '/report/productosRep/ProductosVencimiento' },
     ],
     'Reportes de Usuarios': [
-        { nombre: 'Usuarios por Rol', ruta: '/report/UsuariosRep/UsuariosPorRol' },
-        { nombre: 'Historial de Usuarios', ruta: '/report/UsuariosRep/UsuariosHistoria' }
+      { nombre: 'Usuarios por Rol', ruta: '/report/UsuariosRep/UsuariosPorRol' },
+      { nombre: 'Historial de Usuarios', ruta: '/report/UsuariosRep/UsuariosHistoria' },
     ],
-    'Administracion': [
-        { nombre: 'Usuarios', ruta: '/usuarios' },
-        { nombre: 'Roles', ruta: '/RolesPage' },
-        { nombre: 'Permisos por Rol', ruta: '/permisos/rol/:idRol' },
-        { nombre: 'Usuarios - Lista', ruta: '/usuarios' },
-        { nombre: 'Usuarios - ID', ruta: '/usuarios/:id' }
+    Ubicacion: [
+      { nombre: 'Gestionar Municipios', ruta: '/municipios' },
+      { nombre: 'Gestionar Sedes', ruta: '/sedes' },
+      { nombre: 'Gestionar Sitios', ruta: '/sitio' },
+      { nombre: 'Gestionar Tipos de Sitio', ruta: '/tipo-sitio' },
     ],
-    'Ubicacion': [
-        { nombre: 'Municipios', ruta: '/MunicipioPage' },
-        { nombre: 'Sedes', ruta: '/SedesPage' },
-        { nombre: 'Sitios', ruta: '/SitiosPage' },
-        { nombre: 'Tipos de Sitio', ruta: '/Tipo_sitiosPage' }
-    ],
-    'Formacion': [
-        { nombre: 'Centros de Formacion', ruta: '/CentrosFormaciones' },
-        { nombre: 'Titulados', ruta: '/TituladosPage' },
-        { nombre: 'Fichas de Formacion', ruta: '/FichaFormacionPage' },
-        { nombre: 'Areas de Formacion', ruta: '/AreasPage' }
+    Formacion: [
+      { nombre: 'Gestionar Centros de Formación', ruta: '/centro-formacion' },
+      { nombre: 'Gestionar Titulados', ruta: '/titulados' },
+      { nombre: 'Gestionar Fichas', ruta: '/fichas-formacion' },
+      { nombre: 'Gestionar Áreas', ruta: '/areas' },
     ],
   };
 
-  console.log('--- Creando módulos y opciones... ---');
-  const todasLasOpciones: Opcion[] = [];
-
+  console.log('--- Creando y asignando módulos, opciones y permisos... ---');
   for (const nombreModulo in modulosYopciones) {
-    let moduloDB = await moduloRepo.findOne({ where: { nombreModulo: nombreModulo } });
+    let moduloDB = await moduloRepo.findOne({ where: { nombreModulo } });
     if (!moduloDB) {
-      moduloDB = moduloRepo.create({ nombreModulo: nombreModulo });
-      await moduloRepo.save(moduloDB);
+      moduloDB = await moduloRepo.save(moduloRepo.create({ nombreModulo }));
       console.log(`✅ Módulo "${nombreModulo}" creado`);
     }
 
     for (const opt of modulosYopciones[nombreModulo]) {
-      let opcionDB = await opcionRepo.findOne({ where: { nombreOpcion: opt.nombre } });
-      if (!opcionDB) {
-        opcionDB = opcionRepo.create({
-          nombreOpcion: opt.nombre,
-          rutaFrontend: opt.ruta,
-          modulo: moduloDB,
-        });
-        await opcionRepo.save(opcionDB);
-        console.log(`   ✅ Opción "${opt.nombre}" creada`);
-      }
-      todasLasOpciones.push(opcionDB);
-    }
-  }
-
-  // --- 5. Asignar TODOS los permisos al rol de Administrador ---
-  console.log('--- Asignando permisos al rol de ADMINISTRADOR... ---');
-  for (const opcion of todasLasOpciones) {
-    const permisoExistente = await permisoRepo.findOne({
-      where: { rol: { id: rolAdmin.id }, opcion: { id: opcion.id } },
-    });
-
-    if (!permisoExistente) {
-      const nuevoPermiso = permisoRepo.create({
-        rol: rolAdmin,
-        opcion: opcion,
-        puedeVer: true,
-        puedeCrear: true,
-        puedeEditar: true,
-        puedeEliminar: true,
+      let opcionDB = await opcionRepo.findOne({
+        where: { rutaFrontend: opt.ruta },
       });
-      await permisoRepo.save(nuevoPermiso);
-      console.log(`✅ Permisos completos para "${opcion.nombreOpcion}" asignados`);
+
+      if (!opcionDB) {
+        opcionDB = await opcionRepo.save(
+          opcionRepo.create({
+            nombreOpcion: opt.nombre,
+            rutaFrontend: opt.ruta,
+            modulo: moduloDB,
+          }),
+        );
+        console.log(`   ✅ Opción "${opt.nombre}" (${opt.ruta}) creada`);
+      } else {
+        if (opcionDB.modulo?.id !== moduloDB.id) {
+          opcionDB.modulo = moduloDB;
+          await opcionRepo.save(opcionDB);
+        }
+      }
+
+      const permisoExistente = await permisoRepo.findOne({
+        where: { rol: { id: rolAdmin.id }, opcion: { id: opcionDB.id } },
+      });
+
+      if (!permisoExistente) {
+        await permisoRepo.save(
+          permisoRepo.create({
+            rol: rolAdmin,
+            opcion: opcionDB,
+            puedeVer: true,
+            puedeCrear: true,
+            puedeEditar: true,
+            puedeEliminar: true,
+          }),
+        );
+        console.log(`   ✅ Permisos para "${opcionDB.nombreOpcion}" asignados`);
+      }
     }
   }
 
