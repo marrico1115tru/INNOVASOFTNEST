@@ -15,6 +15,8 @@ export class Titulados {
 
   @Column("character varying", { name: "nombre", nullable: true, length: 100 })
   nombre: string | null;
+  
+
 
   @OneToMany(
     () => FichasFormacion,
