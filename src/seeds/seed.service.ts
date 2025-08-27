@@ -18,7 +18,6 @@ export class SeedService {
   ) {}
 
   async run() {
-    // Crear rol ADMINISTRADOR si no existe
     let rolAdmin = await this.rolRepo.findOne({ where: { nombreRol: 'ADMINISTRADOR' } });
     if (!rolAdmin) {
       rolAdmin = this.rolRepo.create({ nombreRol: 'ADMINISTRADOR' });
@@ -27,8 +26,6 @@ export class SeedService {
     } else {
       console.log('ℹ Rol ADMINISTRADOR ya existe');
     }
-
-    // Crear área Administración si no existe
     let areaAdmin = await this.areaRepo.findOne({ where: { nombreArea: 'Administración' } });
     if (!areaAdmin) {
       areaAdmin = this.areaRepo.create({ nombreArea: 'Administración' });
@@ -37,8 +34,6 @@ export class SeedService {
     } else {
       console.log('ℹ Área Administración ya existe');
     }
-
-    // Crear usuario admin si no existe
     let adminUser = await this.usuarioRepo.findOne({ where: { email: 'admin@sena.edu.co' } });
     if (!adminUser) {
       const hashedPass = await bcrypt.hash('admin123', 10);
