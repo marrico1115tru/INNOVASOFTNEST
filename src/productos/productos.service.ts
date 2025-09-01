@@ -6,12 +6,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan, Between } from 'typeorm';
 import { Productos } from './entities/Productos.entity';
+import { Solicitudes } from '../solicitudes/entities/Solicitudes.entity'; 
 
 @Injectable()
 export class ProductosService {
   constructor(
     @InjectRepository(Productos)
     private readonly productosRepo: Repository<Productos>,
+
+    @InjectRepository(Solicitudes)
+    private readonly solicitudesRepo: Repository<Solicitudes>,
   ) {}
 
   findAll(): Promise<Productos[]> {
@@ -40,34 +44,31 @@ export class ProductosService {
   create(data: Partial<Productos>): Promise<Productos> {
     const nuevo = this.productosRepo.create(data);
     return this.productosRepo.save(nuevo);
-
-
   }
 
-async obtenerReporteProductosCompleto() {
-  return this.productosRepo
-    .createQueryBuilder('producto')
-    .leftJoinAndSelect('producto.inventarios', 'inventario')
-    .leftJoinAndSelect('inventario.fkSitio', 'sitio')
-    .leftJoin('producto.detalleSolicituds', 'detalleSolicitud')
-    .leftJoin('detalleSolicitud.idSolicitud', 'solicitud')
-    .leftJoin('solicitud.idUsuarioSolicitante', 'usuario')
-    .select([
-      'producto.id',
-      'producto.nombre',
-      'inventario.fechaEntrada',
-      'inventario.fechaSalida',
-      'sitio.nombre',
-      'usuario.id',
-      'usuario.nombre',
-      'usuario.apellido',
-      'detalleSolicitud.cantidadSolicitada',
-      'detalleSolicitud.observaciones',
-    ])
-    .getMany();
-}
+  async obtenerProductosPorSitio() {
+    const result = await this.solicitudesRepo
+      .createQueryBuilder("solicitud")
+      .leftJoin("solicitud.detalleSolicituds", "detalle")
+      .leftJoin("detalle.idProducto", "producto")
+      .leftJoin("producto.inventarios", "inventario")
+      .leftJoin("inventario.fkSitio", "sitio")
+      .leftJoin("solicitud.idUsuarioSolicitante", "usuario")
+      .leftJoin("solicitud.entregaMaterials", "entrega")
+      .select([
+        "solicitud.id AS idsolicitud",
+        `CONCAT(usuario.nombre, ' ', usuario.apellido) AS solicitante`,
+        "producto.nombre AS producto",
+        "detalle.cantidadSolicitada AS cantidadsolicitada",
+        "sitio.nombre AS sitioalmacen",
+        "entrega.fechaEntrega AS fechaentrega",
+        "solicitud.estadoSolicitud AS estadosolicitud"
+      ])
+      .getRawMany();
 
-
+    console.log(result);
+    return result;
+  }
 
   async obtenerProductosVencidos(): Promise<Productos[]> {
     const fechaActual = new Date().toISOString().split('T')[0];
@@ -79,8 +80,6 @@ async obtenerReporteProductosCompleto() {
     });
   }
 
-  
-
   async update(id: number, data: Partial<Productos>): Promise<Productos> {
     const producto = await this.findOne(id);
     Object.assign(producto, data);
@@ -91,8 +90,6 @@ async obtenerReporteProductosCompleto() {
     const producto = await this.findOne(id);
     await this.productosRepo.remove(producto);
   }
-
-  
 
   async obtenerProductosMasSolicitados(limit: number = 5): Promise<any[]> {
     return this.productosRepo
@@ -137,21 +134,6 @@ async obtenerReporteProductosCompleto() {
       .groupBy('producto.nombre')
       .orderBy('COALESCE(SUM(detalle.cantidadSolicitada), 0)', 'DESC')
       .limit(5)
-      .getRawMany();
-  }
-
-  async obtenerProductosPorSitio(): Promise<
-    { nombreSitio: string; nombreProducto: string; stock: number }[]
-  > {
-    return await this.productosRepo
-      .createQueryBuilder('producto')
-      .leftJoin('producto.inventarios', 'inventario')
-      .leftJoin('inventario.fkSitio', 'sitio')
-      .select('sitio.nombre', 'nombreSitio')
-      .addSelect('producto.nombre', 'nombreProducto')
-      .addSelect('SUM(inventario.stock)', 'stock')
-      .groupBy('sitio.nombre')
-      .addGroupBy('producto.nombre')
       .getRawMany();
   }
 

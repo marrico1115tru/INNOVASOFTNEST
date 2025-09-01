@@ -14,24 +14,20 @@ import { Productos } from './entities/Productos.entity';
 import { JwtGuard } from './../auth/guards/jwt.guard';
 import { User } from './../auth/decorators/user.decorator';
 
-
-@UseGuards(JwtGuard) 
+@UseGuards(JwtGuard)
 @Controller('productos')
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
-
 
   @Get()
   findAll(): Promise<Productos[]> {
     return this.productosService.findAll();
   }
 
-@Get('reporte-completo')
-async reporteCompleto() {
-  return this.productosService.obtenerReporteProductosCompleto();
-}
-
-
+  @Get('por-sitio')
+  obtenerReporteSolicitudesCompleto() {
+    return this.productosService.obtenerProductosPorSitio();
+  }
 
   @Get('vencidos')
   getProductosVencidos(): Promise<Productos[]> {
@@ -50,11 +46,6 @@ async reporteCompleto() {
     return this.productosService.obtenerProductosConMayorMovimiento();
   }
 
-  @Get('por-sitio')
-  obtenerPorSitio() {
-    return this.productosService.obtenerProductosPorSitio();
-  }
-
   @Get('proximos-vencer')
   productosProximosAVencer() {
     return this.productosService.productosProximosAVencer();
@@ -68,9 +59,8 @@ async reporteCompleto() {
   @Post()
   create(
     @Body() body: Partial<Productos>,
-    @User() user: any, // 
+    @User() user: any, // usuario autenticado, si quieres usarlo
   ): Promise<Productos> {
-
     return this.productosService.create(body);
   }
 
