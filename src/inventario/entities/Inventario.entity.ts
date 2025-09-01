@@ -18,6 +18,14 @@ export class Inventario {
   @Column("varchar", { name: "placa_sena", length: 50, nullable: true })
   placaSena?: string;
 
+
+  @Column('date', { name: 'fecha_entrada', nullable: false })
+  fechaEntrada: string;
+
+  @Column('date', { name: 'fecha_salida', nullable: true })
+  fechaSalida?: string;
+
+  
   @ManyToOne(() => Sitio, (sitio) => sitio.inventarios)
   @JoinColumn([{ name: "fk_sitio", referencedColumnName: "id" }])
   fkSitio: Sitio;

@@ -27,6 +27,13 @@ export class Opcion {
   })
   rutaFrontend: string;
 
+  @Column('character varying', {
+    name: 'ruta_backend',
+    length: 150,
+    nullable: true,
+  })
+  rutaBackend: string;
+
   @ManyToOne(() => Modulo, (modulo) => modulo.opciones, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -39,5 +46,4 @@ export class Opcion {
   nombre: any;
   ruta: any;
   visible: any;
-  rutaBackend: string;
 }

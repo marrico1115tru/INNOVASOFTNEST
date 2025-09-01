@@ -33,19 +33,25 @@ export class InventarioService {
   async create(data: CreateInventarioDto): Promise<Inventario> {
     const nuevo = this.inventarioRepo.create({
       stock: data.stock,
-      placaSena: data.placaSena,
+      placaSena: data.placaSena ?? undefined,
       idProducto: { id: data.idProductoId } as any,
       fkSitio: { id: data.fkSitioId } as any,
+      fechaEntrada: data.fechaEntrada,
+      fechaSalida: undefined,
     });
     return this.inventarioRepo.save(nuevo);
   }
 
   async update(id: number, data: UpdateInventarioDto): Promise<Inventario> {
     const inventario = await this.findOne(id);
-    if (data.idProductoId) inventario.idProducto = { id: data.idProductoId } as any;
-    if (data.fkSitioId) inventario.fkSitio = { id: data.fkSitioId } as any;
+    if (data.idProductoId !== undefined)
+      inventario.idProducto = { id: data.idProductoId } as any;
+    if (data.fkSitioId !== undefined)
+      inventario.fkSitio = { id: data.fkSitioId } as any;
     if (data.placaSena !== undefined) inventario.placaSena = data.placaSena;
-    if (data.stock) inventario.stock = data.stock;
+    if (data.stock !== undefined) inventario.stock = data.stock;
+    if (data.fechaEntrada !== undefined) inventario.fechaEntrada = data.fechaEntrada;
+    if (data.fechaSalida !== undefined) inventario.fechaSalida = data.fechaSalida ?? undefined;
     return this.inventarioRepo.save(inventario);
   }
 
@@ -80,8 +86,11 @@ export class InventarioService {
         fkSitio: { id: data.fkSitio } as any,
         placaSena: placa,
         stock: 1,
+        fechaEntrada: new Date().toISOString().slice(0, 10),
+        fechaSalida: undefined,
       });
-      inventarios.push(await this.inventarioRepo.save(nuevo));
+      const guardado = await this.inventarioRepo.save(nuevo);
+      inventarios.push(guardado);
     }
     return inventarios;
   }

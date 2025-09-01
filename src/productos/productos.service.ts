@@ -44,6 +44,31 @@ export class ProductosService {
 
   }
 
+async obtenerReporteProductosCompleto() {
+  return this.productosRepo
+    .createQueryBuilder('producto')
+    .leftJoinAndSelect('producto.inventarios', 'inventario')
+    .leftJoinAndSelect('inventario.fkSitio', 'sitio')
+    .leftJoin('producto.detalleSolicituds', 'detalleSolicitud')
+    .leftJoin('detalleSolicitud.idSolicitud', 'solicitud')
+    .leftJoin('solicitud.idUsuarioSolicitante', 'usuario')
+    .select([
+      'producto.id',
+      'producto.nombre',
+      'inventario.fechaEntrada',
+      'inventario.fechaSalida',
+      'sitio.nombre',
+      'usuario.id',
+      'usuario.nombre',
+      'usuario.apellido',
+      'detalleSolicitud.cantidadSolicitada',
+      'detalleSolicitud.observaciones',
+    ])
+    .getMany();
+}
+
+
+
   async obtenerProductosVencidos(): Promise<Productos[]> {
     const fechaActual = new Date().toISOString().split('T')[0];
     return this.productosRepo.find({

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Permiso } from './entities/permiso.entity';
@@ -15,7 +19,6 @@ export class PermisosService {
       relations: ['rol', 'opcion'],
     });
   }
-  
 
   async actualizarPermisosMasivo(permisos: any[]) {
     const resultados: { id: any; actualizado: boolean; error?: string }[] = [];
@@ -23,10 +26,16 @@ export class PermisosService {
     for (const permiso of permisos) {
       const { id, puedeVer, puedeCrear, puedeEditar, puedeEliminar } = permiso;
 
-      const permisoExistente = await this.permisoRepository.findOne({ where: { id } });
+      const permisoExistente = await this.permisoRepository.findOne({
+        where: { id },
+      });
 
       if (!permisoExistente) {
-        resultados.push({ id, actualizado: false, error: 'Permiso no encontrado' });
+        resultados.push({
+          id,
+          actualizado: false,
+          error: 'Permiso no encontrado',
+        });
         continue;
       }
 
@@ -60,7 +69,14 @@ export class PermisosService {
   }
 
   async create(data: Partial<Permiso>): Promise<Permiso> {
-    const { id_rol, id_opcion, puedeVer, puedeCrear, puedeEditar, puedeEliminar } = data as any;
+    const {
+      id_rol,
+      id_opcion,
+      puedeVer,
+      puedeCrear,
+      puedeEditar,
+      puedeEliminar,
+    } = data as any;
 
     if (!id_rol || !id_opcion) {
       throw new BadRequestException('id_rol e id_opcion son obligatorios');
@@ -75,7 +91,9 @@ export class PermisosService {
     });
 
     if (yaExiste) {
-      throw new BadRequestException('Ya existe un permiso para este rol y esta opción');
+      throw new BadRequestException(
+        'Ya existe un permiso para este rol y esta opción',
+      );
     }
 
     const nuevo = this.permisoRepository.create({
@@ -119,22 +137,10 @@ export class PermisosService {
       },
     });
   }
-
+  //SE ACTUALIZO ESTA PARTE
   async getPermisoPorRutaYRol(ruta: string, idRol: number) {
-    const permiso = await this.permisoRepository
-      .createQueryBuilder('permiso')
-      .innerJoinAndSelect('permiso.opcion', 'opcion')
-      .innerJoin('permiso.rol', 'rol')
-      .where('opcion.ruta_frontend = :ruta', { ruta })
-      .andWhere('rol.id = :idRol', { idRol })
-      .select([
-        'permiso.puedeVer',
-        'permiso.puedeCrear',
-        'permiso.puedeEditar',
-        'permiso.puedeEliminar',
-      ])
-      .getOne();
-
+    const permisos = await this.getPermisosPorRol(idRol);
+    const permiso = permisos.find((p) => p.opcion?.rutaFrontend === ruta);
     return (
       permiso || {
         puedeVer: false,
@@ -145,7 +151,9 @@ export class PermisosService {
     );
   }
 
-  async obtenerModulosPorRol(idRol: number): Promise<{ id: number; nombreModulo: string }[]> {
+  async obtenerModulosPorRol(
+    idRol: number,
+  ): Promise<{ id: number; nombreModulo: string }[]> {
     const modulos = await this.permisoRepository
       .createQueryBuilder('permiso')
       .innerJoin('permiso.opcion', 'opcion')

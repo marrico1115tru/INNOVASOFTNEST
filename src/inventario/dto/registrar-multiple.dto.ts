@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsString } from 'class-validator';
+import { IsArray, IsInt, IsString } from "class-validator";
 
 export class RegistrarMultipleDto {
   @IsInt()

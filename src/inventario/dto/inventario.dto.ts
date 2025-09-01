@@ -1,5 +1,6 @@
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min, IsDateString, IsIn, IsPositive, IsArray } from 'class-validator';
 
+// DTO para creación de inventario (fechaEntrada obligatoria)
 export class CreateInventarioDto {
   @IsInt()
   idProductoId: number;
@@ -14,8 +15,12 @@ export class CreateInventarioDto {
   @IsOptional()
   @IsString()
   placaSena?: string;
+
+  @IsDateString()
+  fechaEntrada: string;  // Obligatoria y formato ISO
 }
 
+// DTO para actualización de inventario (propiedades opcionales)
 export class UpdateInventarioDto {
   @IsOptional()
   @IsInt()
@@ -33,4 +38,12 @@ export class UpdateInventarioDto {
   @IsOptional()
   @IsString()
   placaSena?: string;
+
+  @IsOptional()
+  @IsDateString()
+  fechaEntrada?: string;
+
+  @IsOptional()
+  @IsDateString()
+  fechaSalida?: string | null;
 }

@@ -26,6 +26,13 @@ export class ProductosController {
     return this.productosService.findAll();
   }
 
+@Get('reporte-completo')
+async reporteCompleto() {
+  return this.productosService.obtenerReporteProductosCompleto();
+}
+
+
+
   @Get('vencidos')
   getProductosVencidos(): Promise<Productos[]> {
     return this.productosService.obtenerProductosVencidos();

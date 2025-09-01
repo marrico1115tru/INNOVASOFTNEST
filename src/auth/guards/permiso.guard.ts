@@ -5,8 +5,8 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { PermisosService } from './../../permisos/permisos.service'; // ajusta según tu proyecto
-
+import { PermisosService } from 'src/permisos/permisos.service';
+// SE ACTUALIZO TODO EL GUARDIAN
 @Injectable()
 export class PermisoGuard implements CanActivate {
   constructor(private readonly permisosService: PermisosService) {}
@@ -15,9 +15,8 @@ export class PermisoGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
     const user = request.user as any;
 
-    if (!user?.rol?.id) {
+    if (!user?.rol?.id)
       throw new ForbiddenException('No se encontró el rol del usuario');
-    }
 
     const ruta = request.route.path;
     const metodo = request.method;
@@ -28,7 +27,6 @@ export class PermisoGuard implements CanActivate {
     );
 
     let tienePermiso = false;
-
     switch (metodo) {
       case 'GET':
         tienePermiso = permiso.puedeVer;
@@ -45,10 +43,8 @@ export class PermisoGuard implements CanActivate {
         break;
     }
 
-    if (!tienePermiso) {
+    if (!tienePermiso)
       throw new ForbiddenException('No tienes permisos para esta acción');
-    }
-
     return true;
   }
 }

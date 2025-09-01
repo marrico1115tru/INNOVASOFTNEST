@@ -12,10 +12,8 @@ export const dataSourceOptions: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   
-  // En desarrollo, busca archivos .ts. En producción, busca archivos .js compilados.
+
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
-  
-  // En desarrollo, busca archivos .ts. En producción, busca archivos .js compilados.
   migrations: [path.join(__dirname, 'database', 'migrations', '*{.ts,.js}')],
   
   synchronize: false,
