@@ -23,8 +23,7 @@
     "migration:prod:run": "node ./node_modules/typeorm/cli.js --dataSource dist/data-source.js migration:run",
     "migration:generate": "npm run typeorm -- migration:generate",
     "migration:docker:generate": "npm run build && node ./node_modules/typeorm/cli.js --dataSource dist/data-source.js migration:generate",
-    "seed:run": "ts-node -r tsconfig-paths/register src/seeds/seed.ts",
-    "seed:prod:run": "node dist/seeds/seed.js"
+    "seed:run": "ts-node -r tsconfig-paths/register src/seeds/seed.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

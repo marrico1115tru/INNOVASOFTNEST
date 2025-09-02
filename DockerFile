@@ -15,4 +15,4 @@ COPY --from=builder /app/tsconfig.json ./
 COPY --from=builder /app/tsconfig.build.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src ./src
-CMD ["sh", "-c", "npm run migration:prod:run && npm run seed:prod:run && npm run start:prod"]
+CMD ["npm", "run", "start:prod"]
