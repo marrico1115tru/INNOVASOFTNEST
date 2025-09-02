@@ -29,6 +29,8 @@ git clone https://github.com/marrico1115tru/INNOVASOFTNEST.git
 cd INNOVASOFTNEST
 npm install
 
+---
+
 
  ▶️ Ejecutar el proyecto
 
@@ -36,6 +38,9 @@ npm install
 
 ```bash
  npm run start:dev
+
+
+---
 
 
  🐳 Uso con Docker
@@ -46,12 +51,15 @@ npm install
  docker-compose up -d --build
 
 
+---
+
  Detener contenedores:
 
  ```bash
  docker-compose down
 
 
+---
 
 🛠️ Migraciones (TypeORM)
 
@@ -61,6 +69,8 @@ Generar migración:
 ```bash
 docker exec -it dockerinnovasoft-backend-1 sh -c "npm run typeorm -- migration:generate src/database/migrations/"NOMBRE DE LA MIGRACION"
 
+---
+
 
 Ejecutar migracion en la base de datos:
 
@@ -68,6 +78,7 @@ Ejecutar migracion en la base de datos:
 docker exec -it dockerinnovasoft-backend-1 sh -c "npm run typeorm -- migration:run"
 
 
+---
 
 
 🌱 Seed inicial
@@ -75,6 +86,9 @@ Para cargar datos iniciales (usuarios, roles, etc.):
 
 ```bash
 docker exec -it dockerinnovasoft-backend-1 sh -c "npx ts-node -r tsconfig-paths/register src/seeds/seed.ts"
+
+
+---
 
 
 📂 Estructura del proyecto
@@ -109,8 +123,10 @@ src/
  ┗ data-source.ts       # Configuración TypeORM
 
 
-
+---
 
 👩‍💻 Autores
 
 María Del Mar Rico Trujillo/Andres Felipe Peña Martinez – Proyecto INNOVASOFT
+
+---
