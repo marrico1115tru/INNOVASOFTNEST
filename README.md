@@ -25,7 +25,7 @@ Este es el **backend del sistema INNOVASOFT**, desarrollado con **NestJS**, **Ty
 Clona el repositorio e instala dependencias:
 
 ```bash
-git clone <URL_REPOSITORIO>
+git clone https://github.com/marrico1115tru/INNOVASOFTNEST.git
 cd INNOVASOFTNEST
 npm install
 
